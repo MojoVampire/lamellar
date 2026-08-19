@@ -1,0 +1,7 @@
+m4_include([src/components/tl/cuda//configure.m4])
+m4_include([src/components/tl/mlx5//configure.m4])
+m4_include([src/components/tl/nccl//configure.m4])
+m4_include([src/components/tl/rccl//configure.m4])
+m4_include([src/components/tl/self//configure.m4])
+m4_include([src/components/tl/sharp//configure.m4])
+m4_include([src/components/tl/ucp//configure.m4])

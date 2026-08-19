@@ -1,7 +1,15 @@
 
-use std::process::Command;
 use std::{env, path::PathBuf};
 use std::path::Path;
+
+/// Vendored UCC release: unlike UCX/libfabric/MPICH-PMI, upstream has never
+/// published an official "make dist" tarball for UCC. This is a Lamellar
+/// hand-generated tarball -- a fresh checkout of git tag v1.8.0, `./autogen.sh
+/// && ./configure && make dist` run locally -- not an official release
+/// artifact. See README.md for the full provenance disclosure. UCC's
+/// configure.ac already carries upstream's own AM_MAINTAINER_MODE, so no
+/// Lamellar patch was needed there (unlike libfabric/MPICH-PMI).
+const UCC_VERSION: &str = "1.8.0";
 
 fn remove_dst_forcibly(dst: &Path) {
     match std::fs::remove_file(dst) {
@@ -46,32 +54,21 @@ fn copy_rec(src: &Path, dst: &Path) -> std::io::Result<()> {
 }
 
 fn build_ucc(out_path: &PathBuf) -> PathBuf {
-    if !Path::new("ucc/.git").exists() {
-    let _ = Command::new("git")
-        .args(&["submodule", "update", "--init"])
-        .status();
-    let _ = Command::new("git")
-        .current_dir("ucc")
-        .args(&["checkout", "v1.7.0"])
-        .status();
-    }
+    println!("cargo:warning=building vendored UCC {}", UCC_VERSION);
 
     let ucx_root_path = std::env::var("DEP_UCX_ROOT").expect("Could not find UCX installation.");
     let _ucx_lib_path = std::path::PathBuf::from(&ucx_root_path).join("lib");
     let _ucx_include_path = std::path::PathBuf::from(&ucx_root_path).join("include");
 
-    
+
     let dest = out_path.clone().join("ucc_src");
     copy_rec(&std::path::PathBuf::from("ucc"), &dest).expect("Failed to copy UCC source files");
-    
-    let src_path = std::fs::canonicalize(&dest).unwrap();
-    std::process::Command::new("./autogen.sh")
-            .current_dir(src_path.as_path())
-            .status()
-            .expect("Failed to autogen for ucc");
 
+    let src_path = std::fs::canonicalize(&dest).unwrap();
+
+    // No autogen.sh / autoreconf here: the vendored tree already ships a
+    // pre-generated `configure` (see the provenance note on UCC_VERSION above).
     let path = autotools::Config::new(&src_path)
-        .reconf("-ivf")
         .enable_shared()
         .disable_static()
         .with("rocm", Some("no"))

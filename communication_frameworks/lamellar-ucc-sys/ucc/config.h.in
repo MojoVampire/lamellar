@@ -1,0 +1,364 @@
+/* config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
+   systems. This function is required for `alloca.c' support on those systems.
+   */
+#undef CRAY_STACKSEG_END
+
+/* Define to 1 if using `alloca.c'. */
+#undef C_ALLOCA
+
+/* Enable debugging code */
+#undef ENABLE_DEBUG
+
+/* Huawei Kunpeng 920 */
+#undef HAVE_AARCH64_HI1620
+
+/* Cavium ThunderX1 */
+#undef HAVE_AARCH64_THUNDERX1
+
+/* Cavium ThunderX2 */
+#undef HAVE_AARCH64_THUNDERX2
+
+/* Define to 1 if you have `alloca', as a function or macro. */
+#undef HAVE_ALLOCA
+
+/* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
+   */
+#undef HAVE_ALLOCA_H
+
+/* Check attribute [optimize] */
+#undef HAVE_ATTRIBUTE_NOOPTIMIZE
+
+/* Enable CUDA support */
+#undef HAVE_CUDA
+
+/* Define to 1 if you have the <cuda.h> header file. */
+#undef HAVE_CUDA_H
+
+/* Define to 1 if you have the <cuda_runtime.h> header file. */
+#undef HAVE_CUDA_RUNTIME_H
+
+/* Define to 1 if you have the declaration of `asprintf', and to 0 if you
+   don't. */
+#undef HAVE_DECL_ASPRINTF
+
+/* Define to 1 if you have the declaration of `basename', and to 0 if you
+   don't. */
+#undef HAVE_DECL_BASENAME
+
+/* Define to 1 if you have the declaration of `fmemopen', and to 0 if you
+   don't. */
+#undef HAVE_DECL_FMEMOPEN
+
+/* Define to 1 if you have the declaration of `mlx5dv_wr_raw_wqe', and to 0 if
+   you don't. */
+#undef HAVE_DECL_MLX5DV_WR_RAW_WQE
+
+/* Define to 1 if you have the declaration of
+   `SHARP_COLL_DISABLE_LAZY_GROUP_RESOURCE_ALLOC', and to 0 if you don't. */
+#undef HAVE_DECL_SHARP_COLL_DISABLE_LAZY_GROUP_RESOURCE_ALLOC
+
+/* Define to 1 if you have the declaration of `sharp_coll_do_allgather', and
+   to 0 if you don't. */
+#undef HAVE_DECL_SHARP_COLL_DO_ALLGATHER
+
+/* Define to 1 if you have the declaration of `sharp_coll_do_reduce_scatter',
+   and to 0 if you don't. */
+#undef HAVE_DECL_SHARP_COLL_DO_REDUCE_SCATTER
+
+/* Define to 1 if you have the declaration of `SHARP_COLL_HIDE_ERRORS', and to
+   0 if you don't. */
+#undef HAVE_DECL_SHARP_COLL_HIDE_ERRORS
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Enable DOCA_UROM support */
+#undef HAVE_DOCA_UROM
+
+/* Define to 1 if you have the <doca_urom.h> header file. */
+#undef HAVE_DOCA_UROM_H
+
+/* Enable HIP support */
+#undef HAVE_HIP
+
+/* Define to 1 if you have the <hip/hip_runtime.h> header file. */
+#undef HAVE_HIP_HIP_RUNTIME_H
+
+/* Define to 1 if you have the <hsa_ext_amd.h> header file. */
+#undef HAVE_HSA_EXT_AMD_H
+
+/* Define to 1 if you have the <hsa.h> header file. */
+#undef HAVE_HSA_H
+
+/* ibverbs support */
+#undef HAVE_IBVERBS
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <libgen.h> header file. */
+#undef HAVE_LIBGEN_H
+
+/* Define to 1 if you have the `rt' library (-lrt). */
+#undef HAVE_LIBRT
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* mlx5dv support */
+#undef HAVE_MLX5DV
+
+/* MPI support */
+#undef HAVE_MPI
+
+/* Define to 1 if you have the <nccl.h> header file. */
+#undef HAVE_NCCL_H
+
+/* Enable NVLS support */
+#undef HAVE_NVLS
+
+/* Enable NVML support */
+#undef HAVE_NVML
+
+/* "nvmlGpuFabricInfoV_t has partitionId field" */
+#undef HAVE_NVML_FABRIC_PARTITION_ID
+
+/* "nvmlDeviceGetGpuFabricInfo is available" */
+#undef HAVE_NVML_GPU_FABRIC_INFO
+
+/* "nvmlDeviceGetGpuFabricInfoV (versioned) is available" */
+#undef HAVE_NVML_GPU_FABRIC_INFO_V
+
+/* Define to 1 if you have the <nvml.h> header file. */
+#undef HAVE_NVML_H
+
+/* "Use nvmlDeviceGetNvLinkRemoteDeviceType" */
+#undef HAVE_NVML_REMOTE_DEVICE_TYPE
+
+/* Enable profiling */
+#undef HAVE_PROFILING
+
+/* Enable profiling for CL HIER */
+#undef HAVE_PROFILING_CL_HIER
+
+/* Enable profiling for CORE */
+#undef HAVE_PROFILING_CORE
+
+/* Enable profiling for MC */
+#undef HAVE_PROFILING_MC
+
+/* Enable profiling for TL CUDA */
+#undef HAVE_PROFILING_TL_CUDA
+
+/* Enable profiling for TL MLX5 */
+#undef HAVE_PROFILING_TL_MLX5
+
+/* Enable profiling for TL NCCL */
+#undef HAVE_PROFILING_TL_NCCL
+
+/* Enable profiling for TL SELF */
+#undef HAVE_PROFILING_TL_SELF
+
+/* Enable profiling for TL SHARP */
+#undef HAVE_PROFILING_TL_SHARP
+
+/* Enable profiling for TL UCP */
+#undef HAVE_PROFILING_TL_UCP
+
+/* rdmacm support */
+#undef HAVE_RDMACM
+
+/* Enable ROCM support */
+#undef HAVE_ROCM
+
+/* Define to 1 if you have the <sharp/api/sharp_coll.h> header file. */
+#undef HAVE_SHARP_API_SHARP_COLL_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Enable NVLS support in TL CUDA */
+#undef HAVE_TL_CUDA_NVLS
+
+/* Define to 1 if you have the <ucp/api/ucp.h> header file. */
+#undef HAVE_UCP_API_UCP_H
+
+/* Enable use of ucs unique machine identifier */
+#undef HAVE_UCS_GET_SYSTEM_ID
+
+/* Define to 1 if you have the <ucs/sys/uid.h> header file. */
+#undef HAVE_UCS_SYS_UID_H
+
+/* Enable UCX support */
+#undef HAVE_UCX
+
+/* flags for ucp config */
+#undef HAVE_UCX_NODE_LOCAL_ID
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
+#undef LT_OBJDIR
+
+/* Define to 1 to disable Valgrind annotations. */
+#undef NVALGRIND
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* The size of `cuDoubleComplex', as computed by sizeof. */
+#undef SIZEOF_CUDOUBLECOMPLEX
+
+/* The size of `cuFloatComplex', as computed by sizeof. */
+#undef SIZEOF_CUFLOATCOMPLEX
+
+/* The size of `double', as computed by sizeof. */
+#undef SIZEOF_DOUBLE
+
+/* The size of `double _Complex', as computed by sizeof. */
+#undef SIZEOF_DOUBLE__COMPLEX
+
+/* The size of `float', as computed by sizeof. */
+#undef SIZEOF_FLOAT
+
+/* The size of `float _Complex', as computed by sizeof. */
+#undef SIZEOF_FLOAT__COMPLEX
+
+/* The size of `long double', as computed by sizeof. */
+#undef SIZEOF_LONG_DOUBLE
+
+/* The size of `long double _Complex', as computed by sizeof. */
+#undef SIZEOF_LONG_DOUBLE__COMPLEX
+
+/* If using the C implementation of alloca, define if you know the
+   direction of stack growth for your system; otherwise it will be
+   automatically deduced at runtime.
+	STACK_DIRECTION > 0 => grows toward higher addresses
+	STACK_DIRECTION < 0 => grows toward lower addresses
+	STACK_DIRECTION = 0 => direction of growth unknown */
+#undef STACK_DIRECTION
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Words are stored with the most significant byte first */
+#undef UCC_BIG_ENDIAN
+
+/* UCC configure flags */
+#undef UCC_CONFIGURE_FLAGS
+
+/* Enable asserts */
+#undef UCC_ENABLE_ASSERT
+
+/* UCC module sub-directory */
+#undef UCC_MODULE_SUBDIR
+
+/* flags for config table */
+#undef UCS_HAVE_CONFIG_GLOBAL_LIST_ENTRY_FLAGS
+
+/* params interface for ucs_mpool_init */
+#undef UCS_HAVE_MPOOL_PARAMS
+
+/* flags for ucs_rcache_get */
+#undef UCS_HAVE_PARSER_CONFIG_DOC
+
+/* flags for ucs_config_parser_print_opts */
+#undef UCS_HAVE_PARSER_PRINT_FILTER_ARG
+
+/* flags for ucs_rcache_get */
+#undef UCS_HAVE_PARSER_SET_VALUE_TABLE_PREFIX
+
+/* flags for ucs_rcache_ops_t */
+#undef UCS_HAVE_RCACHE_MERGE_CB
+
+/* flags for ucs_rcache_get */
+#undef UCS_HAVE_RCACHE_REGION_ALIGNMENT
+
+/* Highest log level */
+#undef UCS_MAX_LOG_LEVEL
+
+/* Enable extensions on AIX 3, Interix.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+/* Enable GNU extensions on systems that have them.  */
+#ifndef _GNU_SOURCE
+# undef _GNU_SOURCE
+#endif
+/* Enable threading extensions on Solaris.  */
+#ifndef _POSIX_PTHREAD_SEMANTICS
+# undef _POSIX_PTHREAD_SEMANTICS
+#endif
+/* Enable extensions on HP NonStop.  */
+#ifndef _TANDEM_SOURCE
+# undef _TANDEM_SOURCE
+#endif
+/* Enable general extensions on Solaris.  */
+#ifndef __EXTENSIONS__
+# undef __EXTENSIONS__
+#endif
+
+
+/* Version number of package */
+#undef VERSION
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
+
+/* Define to 1 if on MINIX. */
+#undef _MINIX
+
+/* Define to 2 if the system does not provide POSIX.1 features except with
+   this defined. */
+#undef _POSIX_1_SOURCE
+
+/* Define to 1 if you need to in order for `stat' and other things to work. */
+#undef _POSIX_SOURCE
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef size_t

@@ -1,0 +1,7 @@
+SUBDIRS += components/tl/cuda
+SUBDIRS += components/tl/mlx5
+SUBDIRS += components/tl/nccl
+SUBDIRS += components/tl/rccl
+SUBDIRS += components/tl/self
+SUBDIRS += components/tl/sharp
+SUBDIRS += components/tl/ucp
