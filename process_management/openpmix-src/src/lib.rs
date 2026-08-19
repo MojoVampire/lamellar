@@ -125,12 +125,36 @@ impl Build {
     pub fn build(&self) -> Artifacts {
         let out_dir = self.out_dir.as_ref().expect("OUT_DIR not set");
         let target = self.target.as_ref().expect("TARGET not set");
+        // None means: don't pass --with-libevent/--with-hwloc at all, and let PMIx's own
+        // ./configure fall through to its built-in pkg-config auto-detection (OAC_CHECK_PACKAGE)
+        // instead of forcing an explicit path.
+        // libevent-sys emits cargo:include= but never cargo:root=, so DEP_EVENT_ROOT
+        // alone is always unset -- derive the prefix from DEP_EVENT_INCLUDE's parent
+        // instead (mirrors prrte-src's equivalent lookup).
         let lib_event_dir = std::env::var("LIBEVENT_DIR")
             .or_else(|_| std::env::var("DEP_EVENT_ROOT"))
-            .expect("Couldn't find libevent: set LIBEVENT_DIR to a system libevent install prefix, or enable the vendored-libevent feature");
+            .ok()
+            .or_else(|| {
+                std::env::var("DEP_EVENT_INCLUDE").ok().map(|include_str| {
+                    std::path::Path::new(&include_str)
+                        .parent()
+                        .unwrap()
+                        .display()
+                        .to_string()
+                })
+            });
         let libhwloc_dir = std::env::var("HWLOC_DIR")
             .or_else(|_| std::env::var("DEP_HWLOC_ROOT"))
-            .expect("Couldn't find libhwloc: set HWLOC_DIR to a system hwloc install prefix, or enable the vendored-hwloc feature");
+            .ok()
+            .or_else(|| {
+                std::env::var("DEP_HWLOC_INCLUDE").ok().map(|include_str| {
+                    std::path::Path::new(&include_str)
+                        .parent()
+                        .unwrap()
+                        .display()
+                        .to_string()
+                })
+            });
 
         let dest = out_dir.join("src");
         let src = source_dir();
@@ -144,7 +168,7 @@ impl Build {
         // -- that's the whole point of vendoring the tarball instead of a
         // git checkout.
         let mut pmix_build = autotools::Config::new(pmix_path.as_path());
-        let pmix_build = pmix_build
+        pmix_build
             .out_dir(out_dir)
             .disable_static()
             .enable_shared()
@@ -152,10 +176,14 @@ impl Build {
             // pps/pattrs/pquery/pevent/wrapper CLI tools and the test/example
             // programs. Neither is needed to link against libpmix.
             .disable("pmix-binaries", None)
-            .with("tests-examples", Some("no"))
-            .with("libevent", Some(&lib_event_dir))
-            .with("hwloc", Some(&libhwloc_dir))
-            .build();
+            .with("tests-examples", Some("no"));
+        if let Some(dir) = lib_event_dir.as_ref() {
+            pmix_build.with("libevent", Some(dir));
+        }
+        if let Some(dir) = libhwloc_dir.as_ref() {
+            pmix_build.with("hwloc", Some(dir));
+        }
+        let pmix_build = pmix_build.build();
 
         let include_dir = pmix_build.join("include");
         let lib_dir = pmix_build.join("lib");

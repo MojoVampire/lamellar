@@ -56,22 +56,41 @@ fn find_pmix(out_path: &std::path::PathBuf) -> (std::path::PathBuf, std::path::P
     #[cfg(any(feature = "vendored", feature = "openpmix-src"))]
     {
         if env_inner("PMIX_NO_VENDORED").map_or(true, |v| v == "0") {
+            // None means: no explicit override known here, so openpmix-src's own
+            // ./configure is left to auto-detect a system libevent/hwloc via pkg-config
+            // (see openpmix-src's build.rs), and this link-search/link-lib emission
+            // below falls back to trusting the linker's default search paths.
             let libevent_from_env = env_inner("LIBEVENT_DIR");
             let lib_event_dir = libevent_from_env.clone()
                 .or_else(|| std::env::var("DEP_EVENT_ROOT").ok())
-                .expect("Couldn't find libevent: set LIBEVENT_DIR to a system libevent install prefix, or enable the vendored-libevent feature");
+                .or_else(|| std::env::var("DEP_EVENT_INCLUDE").ok().map(|include_str| {
+                    std::path::Path::new(&include_str).parent().unwrap().display().to_string()
+                }));
             let hwloc_from_env = env_inner("HWLOC_DIR");
             let libhwloc_dir = hwloc_from_env.clone()
                 .or_else(|| std::env::var("DEP_HWLOC_ROOT").ok())
-                .expect("Couldn't find libhwloc: set HWLOC_DIR to a system hwloc install prefix, or enable the vendored-hwloc feature");
+                .or_else(|| std::env::var("DEP_HWLOC_INCLUDE").ok().map(|include_str| {
+                    std::path::Path::new(&include_str).parent().unwrap().display().to_string()
+                }));
             let artifacts =  openpmix_src::Build::new().build();
-            println!("cargo:rustc-link-search={}/lib", lib_event_dir);
-            println!("cargo:rustc-link-search={}/lib", libhwloc_dir);
-            // A system libevent/hwloc (selected via LIBEVENT_DIR/HWLOC_DIR) is typically
-            // only available as a shared library, unlike the vendored autotools build
-            // which always produces static archives.
-            let event_link_kind = if libevent_from_env.is_some() { "dylib" } else { "static" };
-            let hwloc_link_kind = if hwloc_from_env.is_some() { "dylib" } else { "static" };
+            // Propagate DEP_PMIX_ROOT to consumers (e.g. prrte-src) via the `links = "pmix"`
+            // mechanism -- find_pmix_normal() below already does this for the non-vendored
+            // path, but this vendored path never did, leaving DEP_PMIX_ROOT unset even on a
+            // successful vendored build.
+            println!("cargo:root={}", artifacts.lib_dir().parent().unwrap_or(artifacts.lib_dir()).display());
+            if let Some(dir) = lib_event_dir.as_ref() {
+                println!("cargo:rustc-link-search={}/lib", dir);
+            }
+            if let Some(dir) = libhwloc_dir.as_ref() {
+                println!("cargo:rustc-link-search={}/lib", dir);
+            }
+            // A system libevent/hwloc (selected via LIBEVENT_DIR/HWLOC_DIR, or
+            // auto-detected by openpmix-src's own configure via pkg-config when neither
+            // is set) is typically only available as a shared library, unlike the
+            // vendored autotools build (DEP_EVENT_ROOT/DEP_HWLOC_ROOT case) which always
+            // produces static archives.
+            let event_link_kind = if lib_event_dir.is_some() && libevent_from_env.is_none() { "static" } else { "dylib" };
+            let hwloc_link_kind = if libhwloc_dir.is_some() && hwloc_from_env.is_none() { "static" } else { "dylib" };
             println!("cargo:rustc-link-lib={}=event_core", event_link_kind);
             println!("cargo:rustc-link-lib={}=event_pthreads", event_link_kind);
             println!("cargo:rustc-link-lib={}=hwloc", hwloc_link_kind);
