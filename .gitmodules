@@ -10,6 +10,3 @@
 [submodule "lamellar-runtime"]
 	path = lamellar-runtime
 	url = https://github.com/pnnl/lamellar-runtime
-[submodule "process_management/prrte-src/prrte"]
-	path = process_management/prrte-src/prrte
-	url = https://github.com/openpmix/prrte.git

@@ -1,12 +1,21 @@
 use std::path::{Path, PathBuf};
 use std::env;
 
+/// Vendored PRRTE release: the official "make dist" tarball from a PRRTE
+/// GitHub release (v3.0.14), NOT a git checkout. It ships with `configure`
+/// already generated, so no Flex/Autoconf/Automake/Libtool/autogen.pl is
+/// required to build it. Its pre-built Sphinx docs bundle (docs/_build) has
+/// been stripped out -- it's most of the tarball's size and unneeded since
+/// we never install docs; `configure` detects its absence and skips doc
+/// install cleanly (see `OAC_SETUP_SPHINX` in prrte/configure.ac).
+const PRRTE_VERSION: &str = "3.0.14";
+
 pub fn source_dir() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("prrte")
 }
 
 pub fn version() -> &'static str {
-    env!("CARGO_PKG_VERSION")
+    PRRTE_VERSION
 }
 
 pub struct Build {
@@ -114,25 +123,43 @@ impl Build {
     pub fn build(&self) -> Artifacts {
         let out_dir = self.out_dir.as_ref().expect("OUT_DIR not set");
         let target = self.target.as_ref().expect("TARGET not set");
+        // None means: don't pass --with-libevent/--with-hwloc at all, and let PRRTE's own
+        // ./configure fall through to its built-in pkg-config auto-detection (see
+        // OAC_CHECK_PACKAGE in config/oac/oac_check_package.m4) instead of forcing an
+        // explicit path.
         let lib_event_dir = if let Ok(dir) = std::env::var("LIBEVENT_DIR") {
-            dir
+            Some(dir)
         } else if let Ok(root_dir) = std::env::var("DEP_EVENT_ROOT") {
-            root_dir
-        } else {
-            let include_str = std::env::var("DEP_EVENT_INCLUDE").expect("Couldn't find libevent: set LIBEVENT_DIR to a system libevent install prefix, or enable the vendored-libevent feature");
+            Some(root_dir)
+        } else if let Ok(include_str) = std::env::var("DEP_EVENT_INCLUDE") {
             let include_dir = std::path::Path::new(&include_str);
-            include_dir.parent().unwrap().display().to_string()
+            Some(include_dir.parent().unwrap().display().to_string())
+        } else {
+            None
         };
         let libhwloc_dir = if let Ok(dir) = std::env::var("HWLOC_DIR") {
-            dir
+            Some(dir)
         } else if let Ok(root_dir) = std::env::var("DEP_HWLOC_ROOT") {
-            root_dir
-        } else {
-            let include_str = std::env::var("DEP_HWLOC_INCLUDE").expect("Couldn't find libhwloc: set HWLOC_DIR to a system hwloc install prefix, or enable the vendored-hwloc feature");
+            Some(root_dir)
+        } else if let Ok(include_str) = std::env::var("DEP_HWLOC_INCLUDE") {
             let include_dir = std::path::Path::new(&include_str);
-            include_dir.parent().unwrap().display().to_string()
+            Some(include_dir.parent().unwrap().display().to_string())
+        } else {
+            None
         };
-        let libpmix_dir = std::env::var("DEP_PMIX_ROOT").expect("Couldn't find libpmix");
+        // None means: don't pass --with-pmix at all, and let PRRTE's own ./configure
+        // fall through to its built-in pkg-config auto-detection (PRTE_CHECK_PMIX ->
+        // OAC_CHECK_PACKAGE, config/prte_setup_pmix.m4) instead of forcing an explicit
+        // path -- same fallthrough as libevent/hwloc above. PRRTE always requires some
+        // pmix (--with-pmix=no is a hard configure error), it just doesn't have to be
+        // this workspace's vendored pmix-sys/openpmix-src.
+        let libpmix_dir = if let Ok(dir) = std::env::var("PMIX_DIR") {
+            Some(dir)
+        } else if let Ok(root_dir) = std::env::var("DEP_PMIX_ROOT") {
+            Some(root_dir)
+        } else {
+            None
+        };
 
         let dest = out_dir.join("src");
         let src = source_dir();
@@ -140,18 +167,23 @@ impl Build {
         copy_rec(&src, &dest).expect("Failed to copy source_dir() to OUT_DIR/src");
 
         let prrte_path = std::fs::canonicalize(dest).unwrap();
-        std::process::Command::new("./autogen.pl")
-                .current_dir(prrte_path.as_path())
-                .status()
-                .expect("Failed to autogen for prrte");
-        
-        let prrte_build = autotools::Config::new(prrte_path.as_path())
-                .enable_static()
-                .disable_shared()
-                .with("libevent", Some(&lib_event_dir))
-                .with("hwloc", Some(&libhwloc_dir))
-                .with("pmix", Some(&libpmix_dir))
-                .build();
+
+        // No autogen.pl / autoreconf here: the vendored tree came from the
+        // official release tarball, which ships a pre-generated `configure`
+        // -- that's the whole point of vendoring the tarball instead of a
+        // git checkout.
+        let mut prrte_config = autotools::Config::new(prrte_path.as_path());
+        prrte_config.enable_static().disable_shared();
+        if let Some(dir) = lib_event_dir.as_ref() {
+            prrte_config.with("libevent", Some(dir));
+        }
+        if let Some(dir) = libhwloc_dir.as_ref() {
+            prrte_config.with("hwloc", Some(dir));
+        }
+        if let Some(dir) = libpmix_dir.as_ref() {
+            prrte_config.with("pmix", Some(dir));
+        }
+        let prrte_build = prrte_config.build();
 
 
         let include_dir = prrte_build.join("include");
