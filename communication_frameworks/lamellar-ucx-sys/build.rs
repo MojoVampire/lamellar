@@ -1,30 +1,30 @@
 use std::{
     env,
-    path::{Path, PathBuf},
+    path::PathBuf,
     process::{Command, Stdio, exit},
 };
 
 use glob::glob;
 
-fn build_ucx(out_path: &PathBuf) -> PathBuf {
-    if !Path::new("ucx/.git").exists() {
-        let _ = Command::new("git")
-            .args(&["submodule", "update", "--init"])
-            .status();
-        let _ = Command::new("git")
-            .current_dir("ucx")
-            .args(&["checkout", "v1.19.0"])
-            .status();
-    }
+/// Vendored UCX release: the official "make dist" tarball from a UCX GitHub
+/// release (v1.20.0), NOT a git checkout. It ships with `configure` already
+/// generated, so no Flex/Autoconf/Automake/Libtool/autogen.sh is required to
+/// build it.
+const UCX_VERSION: &str = "1.20.0";
 
+fn build_ucx(out_path: &PathBuf) -> PathBuf {
+    println!("cargo:warning=building vendored UCX {}", UCX_VERSION);
     let dest = out_path.clone().join("ucx_src");
     Command::new("cp")
         .args(&["-r", "ucx", &dest.to_string_lossy()])
         .status()
         .unwrap();
 
+    // No autogen.sh / autoreconf here: the vendored tree came from the
+    // official release tarball, which ships a pre-generated `configure`
+    // -- that's the whole point of vendoring the tarball instead of a
+    // git checkout.
     let path = autotools::Config::new(dest)
-        .reconf("-ivfWnone")
         .enable("shared", None)
         .disable("static", None)
         .disable("logging", None)
