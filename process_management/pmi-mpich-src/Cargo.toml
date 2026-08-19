@@ -1,6 +1,6 @@
 [package]
 name = "pmi-mpich-src"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Ryan D. Friese <ryan.friese@pnnl.gov>"]
 description = "Vendored build of MPICH's PMI implementation, developed for use by the Lamellar runtime."
@@ -10,15 +10,6 @@ homepage = "https://github.com/pnnl/lamellar"
 license-file = "LICENSE"
 keywords = ["hpc", "pmi", "process-management"]
 categories = ["external-ffi-bindings", "network-programming"]
-exclude = [
-    "mpich/modules/libfabric",
-    "mpich/modules/hwloc",
-    "mpich/modules/ucx",
-    "mpich/modules/json-c",
-    "mpich/modules/mydef_boot",
-    "mpich/doc",
-    "mpich/examples",
-]
 
 [dependencies]
 autotools = "0.2.7"

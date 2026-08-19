@@ -1,12 +1,20 @@
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
+/// Vendored MPICH-PMI release: upstream's standalone `libpmi` "make dist"
+/// tarball (v5.0.0), NOT a full MPICH checkout. It ships with `configure`
+/// (and `mpl/configure`) already generated, so no Flex/Autoconf/Automake/
+/// Libtool/autogen.sh is required to build it. `configure.ac` (both the
+/// top-level PMI package and the embedded `mpl` subpackage) carries a
+/// Lamellar-added `AM_MAINTAINER_MODE` guard -- see `libpmi/configure.ac`.
+const MPICH_PMI_VERSION: &str = "5.0.0";
+
 pub fn source_dir() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("mpich")
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("libpmi")
 }
 
 pub fn version() -> &'static str {
-    env!("CARGO_PKG_VERSION")
+    MPICH_PMI_VERSION
 }
 
 pub struct Build {
@@ -130,23 +138,12 @@ impl Build {
         };
 
         let pmi_mpich_path = std::fs::canonicalize(dest).unwrap();
-        std::process::Command::new("./autogen.sh")
-                .current_dir(pmi_mpich_path.as_path())
-                .arg("--with-pmi")
-                .arg("--without-hydra")
-                .arg("--without-romi")
-                .arg("--without-hwloc")
-                .arg("--without-ucx")
-                .arg("--without-ofi")
-                .arg("--without-json")
-                .arg("--without-yaksa")
-                .arg("--without-test")
-                .arg("--without-fortran")
-                .arg("--without-f77")
-                .arg("--without-f08")
-                .status()
-                .expect("Failed to autogen for pmi_mpich");
 
+        // No autogen.sh / autoreconf here: the vendored tree came from
+        // upstream's official standalone `libpmi` release tarball, which
+        // ships pre-generated `configure` (and `mpl/configure`) -- that's
+        // the whole point of vendoring the tarball instead of a git
+        // checkout.
         std::process::Command::new("patch")
             .current_dir(pmi_mpich_path.as_path())
             .arg("-p0")
@@ -155,8 +152,8 @@ impl Build {
             .status()
             .expect("Failed to apply patch for pmi_mpich");
 
-        let mut pmi_mpich_build = autotools::Config::new(pmi_mpich_path.join("src").join("pmi").as_path());
-        let pmi_mpich_build = pmi_mpich_build.reconf("-ivf")
+        let mut pmi_mpich_build = autotools::Config::new(pmi_mpich_path.as_path());
+        let pmi_mpich_build = pmi_mpich_build
             .disable(disable, None)
             .out_dir(out_dir)
             // .disable_static()
