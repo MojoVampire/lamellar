@@ -4,12 +4,21 @@ use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 use std::env;
 
+/// Vendored libfabric release: the official "make dist" tarball from a
+/// libfabric GitHub release (v1.22.0), NOT a git checkout. It ships with
+/// `configure` already generated, so no Flex/Autoconf/Automake/Libtool/
+/// autogen.sh is required to build it. Unlike PMIx/PRRTE's Sphinx docs, the
+/// tarball's `man/` pages are NOT stripped -- they're wired as an
+/// unconditional prerequisite of the generated `install` target with no
+/// configure-time opt-out, so removing them would break `make install`.
+const LIBFABRIC_VERSION: &str = "1.22.0";
+
 pub fn source_dir() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("libfabric")
 }
 
 pub fn version() -> &'static str {
-    env!("CARGO_PKG_VERSION")
+    LIBFABRIC_VERSION
 }
 
 pub struct Build {
@@ -134,9 +143,15 @@ impl Build {
                 let ofi_src_path =
                     std::fs::canonicalize(ofi_dir.unwrap()).unwrap();
 
+                // No autogen.sh / autoreconf here: the vendored tree came from the
+                // official release tarball, which ships a pre-generated `configure`
+                // -- that's the whole point of vendoring the tarball instead of a
+                // git checkout. configure.ac carries a Lamellar-added
+                // AM_MAINTAINER_MODE guard (see libfabric/configure.ac), so
+                // Automake's timestamp-triggered regen rules stay off by default
+                // regardless of mtimes lost during copy_rec/git checkout.
                 #[cfg(not(feature = "shared"))]
                 let install_dest = autotools::Config::new(ofi_src_path)
-                    .reconf("-ivf")
                     .disable_shared()
                     .enable_static()
                     .cflag("-O3")
@@ -145,7 +160,6 @@ impl Build {
 
                 #[cfg(feature = "shared")]
                 let install_dest = autotools::Config::new(ofi_src_path)
-                    .reconf("-ivf")
                     .enable_shared()
                     .disable_static()
                     .cflag("-O3")
