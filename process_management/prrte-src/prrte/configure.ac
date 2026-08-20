@@ -137,6 +137,14 @@ PRTE_VAR_SCOPE_POP
 
 AM_INIT_AUTOMAKE([foreign dist-bzip2 subdir-objects no-define 1.13.4 tar-pax])
 
+dnl Lamellar addition (not upstream): guard Automake's timestamp-triggered
+dnl aclocal.m4/configure/Makefile.in regen rules behind --enable-maintainer-mode
+dnl (disabled by default). Without this, vendoring the tarball into git loses
+dnl the original dist mtimes on every checkout, and the generated Makefile
+dnl tries to regenerate those files with the exact aclocal/automake version
+dnl the release was built with, which isn't installed here.
+AM_MAINTAINER_MODE
+
 # SILENT_RULES is new in AM 1.11, but we require 1.11 or higher via
 # autogen.  Limited testing shows that calling SILENT_RULES directly
 # works in more cases than adding "silent-rules" to INIT_AUTOMAKE

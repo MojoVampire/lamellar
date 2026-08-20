@@ -1028,6 +1028,9 @@ LDFLAGS
 CFLAGS
 CC
 GREP
+MAINT
+MAINTAINER_MODE_FALSE
+MAINTAINER_MODE_TRUE
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -1098,7 +1101,6 @@ infodir
 docdir
 oldincludedir
 includedir
-runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -1125,6 +1127,7 @@ enable_option_checking
 with_pmix_platform_patches_dir
 with_pmix_platform
 enable_silent_rules
+enable_maintainer_mode
 enable_dependency_tracking
 enable_shared
 enable_static
@@ -1239,7 +1242,6 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
-runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
@@ -1492,15 +1494,6 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
-  -runstatedir | --runstatedir | --runstatedi | --runstated \
-  | --runstate | --runstat | --runsta | --runst | --runs \
-  | --run | --ru | --r)
-    ac_prev=runstatedir ;;
-  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
-  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
-  | --run=* | --ru=* | --r=*)
-    runstatedir=$ac_optarg ;;
-
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1638,7 +1631,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir runstatedir
+		libdir localedir mandir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1791,7 +1784,6 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
-  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -1833,6 +1825,9 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-silent-rules   less verbose build output (undo: "make V=1")
   --disable-silent-rules  verbose build output (undo: "make V=0")
+  --enable-maintainer-mode
+                          enable make rules and dependencies not useful (and
+                          sometimes confusing) to the casual installer
   --enable-dependency-tracking
                           do not reject slow dependency extractors
   --disable-dependency-tracking
@@ -3351,7 +3346,7 @@ fi
 
         # eval into environment
         if test -n ""; then :
-  $as_echo "configure:3354: Loading environment file $with_pmix_platform, with contents below" >&5
+  $as_echo "configure:3349: Loading environment file $with_pmix_platform, with contents below" >&5
 else
   $as_echo Loading environment file $with_pmix_platform, with contents below >&5
 fi
@@ -3379,7 +3374,7 @@ fi
         fi
         echo "Loaded platform arguments for $platform_loaded"
         if test -n ""; then :
-  $as_echo "configure:3382: Loaded platform arguments for $platform_loaded" >&5
+  $as_echo "configure:3377: Loaded platform arguments for $platform_loaded" >&5
 else
   $as_echo Loaded platform arguments for $platform_loaded >&5
 fi
@@ -3545,7 +3540,7 @@ pmix_show_title() {
 ============================================================================
 EOF
   if test -n "1"; then :
-  $as_echo "configure:3548: === ${1}" >&5
+  $as_echo "configure:3543: === ${1}" >&5
 else
   $as_echo === ${1} >&5
 fi
@@ -3558,7 +3553,7 @@ pmix_show_subtitle() {
 *** ${1}
 EOF
   if test -n "1"; then :
-  $as_echo "configure:3561: *** ${1}" >&5
+  $as_echo "configure:3556: *** ${1}" >&5
 else
   $as_echo *** ${1} >&5
 fi
@@ -3571,7 +3566,7 @@ pmix_show_subsubtitle() {
 +++ ${1}
 EOF
   if test -n "1"; then :
-  $as_echo "configure:3574: +++ ${1}" >&5
+  $as_echo "configure:3569: +++ ${1}" >&5
 else
   $as_echo +++ ${1} >&5
 fi
@@ -3583,7 +3578,7 @@ pmix_show_subsubsubtitle() {
 --- ${1}
 EOF
   if test -n "1"; then :
-  $as_echo "configure:3586: --- ${1}" >&5
+  $as_echo "configure:3581: --- ${1}" >&5
 else
   $as_echo --- ${1} >&5
 fi
@@ -3595,7 +3590,7 @@ pmix_show_verbose() {
 +++ VERBOSE: ${1}
 EOF
       if test -n "1"; then :
-  $as_echo "configure:3598: --- ${1}" >&5
+  $as_echo "configure:3593: --- ${1}" >&5
 else
   $as_echo --- ${1} >&5
 fi
@@ -4413,6 +4408,30 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
+
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable maintainer-specific portions of Makefiles" >&5
+$as_echo_n "checking whether to enable maintainer-specific portions of Makefiles... " >&6; }
+    # Check whether --enable-maintainer-mode was given.
+if test "${enable_maintainer_mode+set}" = set; then :
+  enableval=$enable_maintainer_mode; USE_MAINTAINER_MODE=$enableval
+else
+  USE_MAINTAINER_MODE=no
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_MAINTAINER_MODE" >&5
+$as_echo "$USE_MAINTAINER_MODE" >&6; }
+   if test $USE_MAINTAINER_MODE = yes; then
+  MAINTAINER_MODE_TRUE=
+  MAINTAINER_MODE_FALSE='#'
+else
+  MAINTAINER_MODE_TRUE='#'
+  MAINTAINER_MODE_FALSE=
+fi
+
+  MAINT=$MAINTAINER_MODE_TRUE
+
 
 
 # SILENT_RULES is new in AM 1.11, but we require 1.13.4 or higher via
@@ -7511,7 +7530,7 @@ if ${am_cv_pathless_PYTHON+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-	for am_cv_pathless_PYTHON in python python2 python3  python3.15 python3.14 python3.13 python3.12 python3.11 python3.10  python3.9 python3.8 python3.7 python3.6 python3.5 python3.4 python3.3  python3.2 python3.1 python3.0  python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 python2.1  python2.0 none; do
+	for am_cv_pathless_PYTHON in python python2 python3  python3.9 python3.8 python3.7 python3.6 python3.5 python3.4 python3.3  python3.2 python3.1 python3.0  python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 python2.1  python2.0 none; do
 	  test "$am_cv_pathless_PYTHON" = none && break
 	  prog="import sys
 # split strings by '.' and convert to numeric.  Append some zeros
@@ -7592,7 +7611,7 @@ $as_echo_n "checking for $am_display_PYTHON version... " >&6; }
 if ${am_cv_python_version+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  am_cv_python_version=`$PYTHON -c "import sys; print('%u.%u' % sys.version_info[:2])"`
+  am_cv_python_version=`$PYTHON -c "import sys; sys.stdout.write(sys.version[:3])"`
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $am_cv_python_version" >&5
 $as_echo "$am_cv_python_version" >&6; }
@@ -7981,7 +8000,7 @@ $as_echo_n "checking python... " >&6; }
 
         # Find any Python interpreter.
     if test -z "$PYTHON"; then
-      for ac_prog in python python2 python3  python3.15 python3.14 python3.13 python3.12 python3.11 python3.10  python3.9 python3.8 python3.7 python3.6 python3.5 python3.4 python3.3  python3.2 python3.1 python3.0  python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 python2.1  python2.0
+      for ac_prog in python python2 python3  python3.9 python3.8 python3.7 python3.6 python3.5 python3.4 python3.3  python3.2 python3.1 python3.0  python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 python2.1  python2.0
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -8041,7 +8060,7 @@ $as_echo_n "checking for $am_display_PYTHON version... " >&6; }
 if ${am_cv_python_version+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  am_cv_python_version=`$PYTHON -c "import sys; print('%u.%u' % sys.version_info[:2])"`
+  am_cv_python_version=`$PYTHON -c "import sys; sys.stdout.write(sys.version[:3])"`
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $am_cv_python_version" >&5
 $as_echo "$am_cv_python_version" >&6; }
@@ -26358,16 +26377,16 @@ EOF
            # man pages and see if it works.
            oac_happy=0
 
-$as_echo "configure:26361: $SPHINX_BUILD -M html . build-html" >&5
+$as_echo "configure:26380: $SPHINX_BUILD -M html . build-html" >&5
 $SPHINX_BUILD -M html . build-html 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:26364: \$? = $oac_log_command_status" >&5
+$as_echo "configure:26383: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
 
-$as_echo "configure:26367: $SPHINX_BUILD -M man . build-man" >&5
+$as_echo "configure:26386: $SPHINX_BUILD -M man . build-man" >&5
 $SPHINX_BUILD -M man . build-man 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:26370: \$? = $oac_log_command_status" >&5
+$as_echo "configure:26389: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_happy=1
 fi
@@ -26833,16 +26852,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:26836: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
+$as_echo "configure:26855: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_libevent_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:26839: \$? = $oac_log_command_status" >&5
+$as_echo "configure:26858: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_pkgconfig_internal_result=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:26845: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:26864: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
   pmix_libevent_PC_MODULES=${oac_cv_check_package_libevent_pcfilename}
@@ -26874,16 +26893,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:26877: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
+$as_echo "configure:26896: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_libevent_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:26880: \$? = $oac_log_command_status" >&5
+$as_echo "configure:26899: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libevent_pkg_config_cppflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:26886: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:26905: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -26913,16 +26932,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:26916: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
+$as_echo "configure:26935: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_libevent_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:26919: \$? = $oac_log_command_status" >&5
+$as_echo "configure:26938: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libevent_pkg_config_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:26925: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:26944: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -26952,16 +26971,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:26955: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
+$as_echo "configure:26974: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_libevent_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:26958: \$? = $oac_log_command_status" >&5
+$as_echo "configure:26977: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libevent_pkg_config_static_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:26964: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:26983: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -26991,16 +27010,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:26994: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
+$as_echo "configure:27013: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_libevent_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:26997: \$? = $oac_log_command_status" >&5
+$as_echo "configure:27016: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libevent_pkg_config_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:27003: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:27022: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -27030,16 +27049,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:27033: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
+$as_echo "configure:27052: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_libevent_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_libevent_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:27036: \$? = $oac_log_command_status" >&5
+$as_echo "configure:27055: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libevent_pkg_config_static_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:27042: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:27061: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -27104,10 +27123,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:27107: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:version 2>&1`" >&5
+$as_echo "configure:27126: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:version 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:version 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:27110: \$? = $oac_log_command_status" >&5
+$as_echo "configure:27129: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               oac_cv_check_package_libevent_wrapper_compiler_works=yes
@@ -27115,7 +27134,7 @@ else
   oac_cv_check_package_libevent_wrapper_compiler_works=no
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:27118: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:27137: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -27138,10 +27157,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:27141: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:incdirs 2>&1`" >&5
+$as_echo "configure:27160: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:incdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:incdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:27144: \$? = $oac_log_command_status" >&5
+$as_echo "configure:27163: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -27159,7 +27178,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving libevent cppflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:27162: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:27181: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -27179,10 +27198,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:27182: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libdirs 2>&1`" >&5
+$as_echo "configure:27201: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:27185: \$? = $oac_log_command_status" >&5
+$as_echo "configure:27204: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -27200,7 +27219,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving libevent ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:27203: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:27222: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -27220,10 +27239,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:27223: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
+$as_echo "configure:27242: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libdirs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:27226: \$? = $oac_log_command_status" >&5
+$as_echo "configure:27245: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -27241,7 +27260,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving libevent static ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:27244: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:27263: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -27261,10 +27280,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:27264: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libs 2>&1`" >&5
+$as_echo "configure:27283: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:27267: \$? = $oac_log_command_status" >&5
+$as_echo "configure:27286: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -27282,7 +27301,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving libevent libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:27285: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:27304: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -27302,10 +27321,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:27305: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libs_static 2>&1`" >&5
+$as_echo "configure:27324: check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libevent_wrapper_compiler} --showme:libs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:27308: \$? = $oac_log_command_status" >&5
+$as_echo "configure:27327: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -27323,7 +27342,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving libevent static libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:27326: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:27345: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -28427,16 +28446,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:28430: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
+$as_echo "configure:28449: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_libev_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28433: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28452: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_pkgconfig_internal_result=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:28439: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:28458: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
   pmix_libev_PC_MODULES=${oac_cv_check_package_libev_pcfilename}
@@ -28468,16 +28487,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:28471: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
+$as_echo "configure:28490: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_libev_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28474: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28493: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libev_pkg_config_cppflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:28480: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:28499: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -28507,16 +28526,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:28510: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
+$as_echo "configure:28529: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_libev_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28513: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28532: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libev_pkg_config_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:28519: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:28538: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -28546,16 +28565,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:28549: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
+$as_echo "configure:28568: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_libev_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28552: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28571: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libev_pkg_config_static_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:28558: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:28577: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -28585,16 +28604,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:28588: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
+$as_echo "configure:28607: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_libev_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28591: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28610: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libev_pkg_config_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:28597: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:28616: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -28624,16 +28643,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:28627: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
+$as_echo "configure:28646: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_libev_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_libev_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28630: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28649: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libev_pkg_config_static_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:28636: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:28655: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -28698,10 +28717,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:28701: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:version 2>&1`" >&5
+$as_echo "configure:28720: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:version 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:version 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28704: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28723: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               oac_cv_check_package_libev_wrapper_compiler_works=yes
@@ -28709,7 +28728,7 @@ else
   oac_cv_check_package_libev_wrapper_compiler_works=no
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:28712: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:28731: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -28732,10 +28751,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:28735: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:incdirs 2>&1`" >&5
+$as_echo "configure:28754: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:incdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:incdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28738: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28757: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -28753,7 +28772,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving libev cppflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:28756: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:28775: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -28773,10 +28792,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:28776: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libdirs 2>&1`" >&5
+$as_echo "configure:28795: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28779: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28798: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -28794,7 +28813,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving libev ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:28797: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:28816: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -28814,10 +28833,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:28817: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
+$as_echo "configure:28836: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libdirs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28820: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28839: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -28835,7 +28854,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving libev static ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:28838: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:28857: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -28855,10 +28874,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:28858: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libs 2>&1`" >&5
+$as_echo "configure:28877: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28861: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28880: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -28876,7 +28895,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving libev libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:28879: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:28898: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -28896,10 +28915,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:28899: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libs_static 2>&1`" >&5
+$as_echo "configure:28918: check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libev_wrapper_compiler} --showme:libs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:28902: \$? = $oac_log_command_status" >&5
+$as_echo "configure:28921: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -28917,7 +28936,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving libev static libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:28920: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:28939: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -29785,16 +29804,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:29788: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
+$as_echo "configure:29807: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_hwloc_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:29791: \$? = $oac_log_command_status" >&5
+$as_echo "configure:29810: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_pkgconfig_internal_result=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:29797: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:29816: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
   pmix_hwloc_PC_MODULES=${oac_cv_check_package_hwloc_pcfilename}
@@ -29826,16 +29845,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:29829: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
+$as_echo "configure:29848: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_hwloc_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:29832: \$? = $oac_log_command_status" >&5
+$as_echo "configure:29851: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_hwloc_pkg_config_cppflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:29838: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:29857: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -29865,16 +29884,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:29868: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
+$as_echo "configure:29887: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_hwloc_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:29871: \$? = $oac_log_command_status" >&5
+$as_echo "configure:29890: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_hwloc_pkg_config_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:29877: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:29896: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -29904,16 +29923,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:29907: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
+$as_echo "configure:29926: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_hwloc_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:29910: \$? = $oac_log_command_status" >&5
+$as_echo "configure:29929: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_hwloc_pkg_config_static_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:29916: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:29935: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -29943,16 +29962,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:29946: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
+$as_echo "configure:29965: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_hwloc_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:29949: \$? = $oac_log_command_status" >&5
+$as_echo "configure:29968: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_hwloc_pkg_config_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:29955: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:29974: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -29982,16 +30001,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:29985: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
+$as_echo "configure:30004: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_hwloc_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_hwloc_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:29988: \$? = $oac_log_command_status" >&5
+$as_echo "configure:30007: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_hwloc_pkg_config_static_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:29994: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:30013: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -30056,10 +30075,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:30059: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:version 2>&1`" >&5
+$as_echo "configure:30078: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:version 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:version 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:30062: \$? = $oac_log_command_status" >&5
+$as_echo "configure:30081: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               oac_cv_check_package_hwloc_wrapper_compiler_works=yes
@@ -30067,7 +30086,7 @@ else
   oac_cv_check_package_hwloc_wrapper_compiler_works=no
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:30070: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:30089: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -30090,10 +30109,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:30093: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:incdirs 2>&1`" >&5
+$as_echo "configure:30112: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:incdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:incdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:30096: \$? = $oac_log_command_status" >&5
+$as_echo "configure:30115: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -30111,7 +30130,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving hwloc cppflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:30114: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:30133: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -30131,10 +30150,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:30134: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libdirs 2>&1`" >&5
+$as_echo "configure:30153: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:30137: \$? = $oac_log_command_status" >&5
+$as_echo "configure:30156: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -30152,7 +30171,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving hwloc ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:30155: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:30174: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -30172,10 +30191,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:30175: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
+$as_echo "configure:30194: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libdirs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:30178: \$? = $oac_log_command_status" >&5
+$as_echo "configure:30197: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -30193,7 +30212,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving hwloc static ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:30196: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:30215: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -30213,10 +30232,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:30216: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libs 2>&1`" >&5
+$as_echo "configure:30235: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:30219: \$? = $oac_log_command_status" >&5
+$as_echo "configure:30238: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -30234,7 +30253,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving hwloc libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:30237: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:30256: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -30254,10 +30273,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:30257: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libs_static 2>&1`" >&5
+$as_echo "configure:30276: check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_hwloc_wrapper_compiler} --showme:libs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:30260: \$? = $oac_log_command_status" >&5
+$as_echo "configure:30279: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -30275,7 +30294,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving hwloc static libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:30278: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:30297: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -37254,16 +37273,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:37257: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
+$as_echo "configure:37276: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_zlib_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37260: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37279: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_pkgconfig_internal_result=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:37266: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:37285: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
   pcompress_zlib_PC_MODULES=${oac_cv_check_package_zlib_pcfilename}
@@ -37295,16 +37314,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:37298: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
+$as_echo "configure:37317: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_zlib_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37301: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37320: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlib_pkg_config_cppflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:37307: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:37326: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -37334,16 +37353,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:37337: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
+$as_echo "configure:37356: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_zlib_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37340: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37359: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlib_pkg_config_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:37346: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:37365: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -37373,16 +37392,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:37376: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
+$as_echo "configure:37395: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_zlib_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37379: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37398: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlib_pkg_config_static_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:37385: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:37404: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -37412,16 +37431,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:37415: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
+$as_echo "configure:37434: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_zlib_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37418: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37437: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlib_pkg_config_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:37424: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:37443: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -37451,16 +37470,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:37454: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
+$as_echo "configure:37473: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_zlib_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_zlib_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37457: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37476: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlib_pkg_config_static_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:37463: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:37482: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -37525,10 +37544,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:37528: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:version 2>&1`" >&5
+$as_echo "configure:37547: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:version 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:version 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37531: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37550: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               oac_cv_check_package_zlib_wrapper_compiler_works=yes
@@ -37536,7 +37555,7 @@ else
   oac_cv_check_package_zlib_wrapper_compiler_works=no
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:37539: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:37558: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -37559,10 +37578,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:37562: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:incdirs 2>&1`" >&5
+$as_echo "configure:37581: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:incdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:incdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37565: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37584: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -37580,7 +37599,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving zlib cppflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:37583: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:37602: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -37600,10 +37619,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:37603: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libdirs 2>&1`" >&5
+$as_echo "configure:37622: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37606: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37625: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -37621,7 +37640,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving zlib ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:37624: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:37643: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -37641,10 +37660,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:37644: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
+$as_echo "configure:37663: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libdirs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37647: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37666: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -37662,7 +37681,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving zlib static ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:37665: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:37684: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -37682,10 +37701,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:37685: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libs 2>&1`" >&5
+$as_echo "configure:37704: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37688: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37707: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -37703,7 +37722,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving zlib libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:37706: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:37725: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -37723,10 +37742,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:37726: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libs_static 2>&1`" >&5
+$as_echo "configure:37745: check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlib_wrapper_compiler} --showme:libs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:37729: \$? = $oac_log_command_status" >&5
+$as_echo "configure:37748: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -37744,7 +37763,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving zlib static libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:37747: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:37766: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -38748,16 +38767,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:38751: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
+$as_echo "configure:38770: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_zlibng_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:38754: \$? = $oac_log_command_status" >&5
+$as_echo "configure:38773: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_pkgconfig_internal_result=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:38760: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:38779: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
   pcompress_zlibng_PC_MODULES=${oac_cv_check_package_zlibng_pcfilename}
@@ -38789,16 +38808,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:38792: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
+$as_echo "configure:38811: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_zlibng_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:38795: \$? = $oac_log_command_status" >&5
+$as_echo "configure:38814: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlibng_pkg_config_cppflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:38801: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:38820: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -38828,16 +38847,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:38831: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
+$as_echo "configure:38850: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_zlibng_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:38834: \$? = $oac_log_command_status" >&5
+$as_echo "configure:38853: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlibng_pkg_config_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:38840: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:38859: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -38867,16 +38886,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:38870: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
+$as_echo "configure:38889: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_zlibng_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:38873: \$? = $oac_log_command_status" >&5
+$as_echo "configure:38892: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlibng_pkg_config_static_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:38879: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:38898: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -38906,16 +38925,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:38909: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
+$as_echo "configure:38928: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_zlibng_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:38912: \$? = $oac_log_command_status" >&5
+$as_echo "configure:38931: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlibng_pkg_config_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:38918: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:38937: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -38945,16 +38964,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:38948: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
+$as_echo "configure:38967: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_zlibng_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_zlibng_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:38951: \$? = $oac_log_command_status" >&5
+$as_echo "configure:38970: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_zlibng_pkg_config_static_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:38957: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:38976: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -39019,10 +39038,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:39022: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:version 2>&1`" >&5
+$as_echo "configure:39041: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:version 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:version 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:39025: \$? = $oac_log_command_status" >&5
+$as_echo "configure:39044: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               oac_cv_check_package_zlibng_wrapper_compiler_works=yes
@@ -39030,7 +39049,7 @@ else
   oac_cv_check_package_zlibng_wrapper_compiler_works=no
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:39033: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:39052: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -39053,10 +39072,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:39056: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:incdirs 2>&1`" >&5
+$as_echo "configure:39075: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:incdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:incdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:39059: \$? = $oac_log_command_status" >&5
+$as_echo "configure:39078: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -39074,7 +39093,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving zlibng cppflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:39077: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:39096: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -39094,10 +39113,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:39097: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libdirs 2>&1`" >&5
+$as_echo "configure:39116: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:39100: \$? = $oac_log_command_status" >&5
+$as_echo "configure:39119: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -39115,7 +39134,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving zlibng ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:39118: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:39137: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -39135,10 +39154,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:39138: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
+$as_echo "configure:39157: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libdirs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:39141: \$? = $oac_log_command_status" >&5
+$as_echo "configure:39160: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -39156,7 +39175,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving zlibng static ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:39159: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:39178: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -39176,10 +39195,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:39179: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libs 2>&1`" >&5
+$as_echo "configure:39198: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:39182: \$? = $oac_log_command_status" >&5
+$as_echo "configure:39201: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -39197,7 +39216,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving zlibng libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:39200: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:39219: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -39217,10 +39236,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:39220: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libs_static 2>&1`" >&5
+$as_echo "configure:39239: check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_zlibng_wrapper_compiler} --showme:libs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:39223: \$? = $oac_log_command_status" >&5
+$as_echo "configure:39242: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -39238,7 +39257,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving zlibng static libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:39241: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:39260: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -40970,16 +40989,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:40973: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
+$as_echo "configure:40992: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_dlopen_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:40976: \$? = $oac_log_command_status" >&5
+$as_echo "configure:40995: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_pkgconfig_internal_result=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:40982: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:41001: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
   pmix_pdl_pdlopen_PC_MODULES=${oac_cv_check_package_dlopen_pcfilename}
@@ -41011,16 +41030,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:41014: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
+$as_echo "configure:41033: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_dlopen_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41017: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41036: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_dlopen_pkg_config_cppflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:41023: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:41042: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -41050,16 +41069,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:41053: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
+$as_echo "configure:41072: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_dlopen_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41056: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41075: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_dlopen_pkg_config_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:41062: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:41081: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -41089,16 +41108,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:41092: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
+$as_echo "configure:41111: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_dlopen_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41095: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41114: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_dlopen_pkg_config_static_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:41101: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:41120: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -41128,16 +41147,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:41131: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
+$as_echo "configure:41150: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_dlopen_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41134: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41153: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_dlopen_pkg_config_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:41140: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:41159: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -41167,16 +41186,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:41170: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
+$as_echo "configure:41189: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_dlopen_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_dlopen_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41173: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41192: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_dlopen_pkg_config_static_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:41179: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:41198: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -41241,10 +41260,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:41244: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:version 2>&1`" >&5
+$as_echo "configure:41263: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:version 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:version 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41247: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41266: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               oac_cv_check_package_dlopen_wrapper_compiler_works=yes
@@ -41252,7 +41271,7 @@ else
   oac_cv_check_package_dlopen_wrapper_compiler_works=no
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:41255: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:41274: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -41275,10 +41294,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:41278: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:incdirs 2>&1`" >&5
+$as_echo "configure:41297: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:incdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:incdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41281: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41300: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -41296,7 +41315,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving dlopen cppflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:41299: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:41318: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -41316,10 +41335,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:41319: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libdirs 2>&1`" >&5
+$as_echo "configure:41338: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41322: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41341: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -41337,7 +41356,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving dlopen ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:41340: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:41359: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -41357,10 +41376,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:41360: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
+$as_echo "configure:41379: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libdirs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41363: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41382: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -41378,7 +41397,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving dlopen static ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:41381: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:41400: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -41398,10 +41417,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:41401: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libs 2>&1`" >&5
+$as_echo "configure:41420: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41404: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41423: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -41419,7 +41438,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving dlopen libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:41422: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:41441: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -41439,10 +41458,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:41442: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libs_static 2>&1`" >&5
+$as_echo "configure:41461: check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_dlopen_wrapper_compiler} --showme:libs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:41445: \$? = $oac_log_command_status" >&5
+$as_echo "configure:41464: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -41460,7 +41479,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving dlopen static libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:41463: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:41482: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -42393,16 +42412,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:42396: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
+$as_echo "configure:42415: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_libltdl_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42399: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42418: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_pkgconfig_internal_result=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:42405: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:42424: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
   pmix_pdl_plibltdl_PC_MODULES=${oac_cv_check_package_libltdl_pcfilename}
@@ -42434,16 +42453,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:42437: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
+$as_echo "configure:42456: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_libltdl_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42440: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42459: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libltdl_pkg_config_cppflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:42446: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:42465: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -42473,16 +42492,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:42476: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
+$as_echo "configure:42495: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_libltdl_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42479: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42498: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libltdl_pkg_config_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:42485: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:42504: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -42512,16 +42531,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:42515: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
+$as_echo "configure:42534: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_libltdl_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42518: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42537: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libltdl_pkg_config_static_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:42524: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:42543: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -42551,16 +42570,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:42554: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
+$as_echo "configure:42573: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_libltdl_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42557: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42576: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libltdl_pkg_config_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:42563: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:42582: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -42590,16 +42609,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:42593: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
+$as_echo "configure:42612: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_libltdl_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_libltdl_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42596: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42615: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_libltdl_pkg_config_static_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:42602: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:42621: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -42664,10 +42683,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:42667: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:version 2>&1`" >&5
+$as_echo "configure:42686: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:version 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:version 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42670: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42689: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               oac_cv_check_package_libltdl_wrapper_compiler_works=yes
@@ -42675,7 +42694,7 @@ else
   oac_cv_check_package_libltdl_wrapper_compiler_works=no
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:42678: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:42697: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -42698,10 +42717,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:42701: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:incdirs 2>&1`" >&5
+$as_echo "configure:42720: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:incdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:incdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42704: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42723: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -42719,7 +42738,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving libltdl cppflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:42722: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:42741: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -42739,10 +42758,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:42742: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libdirs 2>&1`" >&5
+$as_echo "configure:42761: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42745: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42764: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -42760,7 +42779,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving libltdl ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:42763: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:42782: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -42780,10 +42799,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:42783: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
+$as_echo "configure:42802: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libdirs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42786: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42805: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -42801,7 +42820,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving libltdl static ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:42804: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:42823: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -42821,10 +42840,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:42824: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libs 2>&1`" >&5
+$as_echo "configure:42843: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42827: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42846: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -42842,7 +42861,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving libltdl libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:42845: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:42864: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -42862,10 +42881,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:42865: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libs_static 2>&1`" >&5
+$as_echo "configure:42884: check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_libltdl_wrapper_compiler} --showme:libs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:42868: \$? = $oac_log_command_status" >&5
+$as_echo "configure:42887: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -42883,7 +42902,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving libltdl static libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:42886: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:42905: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -56049,16 +56068,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:56052: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
+$as_echo "configure:56071: check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --exists ${oac_cv_check_package_munge_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56055: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56074: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_pkgconfig_internal_result=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:56061: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:56080: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
   psec_munge_PC_MODULES=${oac_cv_check_package_munge_pcfilename}
@@ -56090,16 +56109,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:56093: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
+$as_echo "configure:56112: check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --cflags ${oac_cv_check_package_munge_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56096: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56115: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_munge_pkg_config_cppflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:56102: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:56121: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -56129,16 +56148,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:56132: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
+$as_echo "configure:56151: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-L --libs-only-other ${oac_cv_check_package_munge_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56135: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56154: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_munge_pkg_config_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:56141: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:56160: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -56168,16 +56187,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:56171: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
+$as_echo "configure:56190: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-L --libs-only-other ${oac_cv_check_package_munge_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56174: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56193: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_munge_pkg_config_static_ldflags=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:56180: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:56199: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -56207,16 +56226,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:56210: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
+$as_echo "configure:56229: check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --libs-only-l ${oac_cv_check_package_munge_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56213: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56232: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_munge_pkg_config_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:56219: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:56238: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -56246,16 +56265,16 @@ oac_var_scope_push ${LINENO} check_package_pkgconfig_run_results check_package_p
     check_package_pkgconfig_run_happy=no
     if test -n "${PKG_CONFIG}"; then :
 
-$as_echo "configure:56249: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
+$as_echo "configure:56268: check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_munge_pcfilename} 2>&1`" >&5
 check_package_pkgconfig_run_results=`${PKG_CONFIG} --static --libs-only-l ${oac_cv_check_package_munge_pcfilename} 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56252: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56271: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   oac_cv_check_package_munge_pkg_config_static_libs=$check_package_pkgconfig_run_results
                 check_package_pkgconfig_run_happy=yes
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-           $as_echo "configure:56258: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
+           $as_echo "configure:56277: pkg-config output: ${check_package_pkgconfig_run_results}" >&5
 fi
     if test "${check_package_pkgconfig_run_happy}" = "yes"; then :
 
@@ -56320,10 +56339,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:56323: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:version 2>&1`" >&5
+$as_echo "configure:56342: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:version 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:version 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56326: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56345: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               oac_cv_check_package_munge_wrapper_compiler_works=yes
@@ -56331,7 +56350,7 @@ else
   oac_cv_check_package_munge_wrapper_compiler_works=no
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:56334: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:56353: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -56354,10 +56373,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:56357: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:incdirs 2>&1`" >&5
+$as_echo "configure:56376: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:incdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:incdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56360: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56379: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -56375,7 +56394,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving munge cppflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:56378: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:56397: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -56395,10 +56414,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:56398: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libdirs 2>&1`" >&5
+$as_echo "configure:56417: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libdirs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libdirs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56401: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56420: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -56416,7 +56435,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving munge ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:56419: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:56438: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -56436,10 +56455,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:56439: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
+$as_echo "configure:56458: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libdirs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libdirs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56442: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56461: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -56457,7 +56476,7 @@ $as_echo "error" >&6; }
                         as_fn_error $? "An error occurred retrieving munge static ldflags from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:56460: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:56479: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -56477,10 +56496,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:56480: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libs 2>&1`" >&5
+$as_echo "configure:56499: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libs 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libs 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56483: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56502: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -56498,7 +56517,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving munge libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:56501: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:56520: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -56518,10 +56537,10 @@ else
 oac_var_scope_push ${LINENO} check_package_wrapper_run_results
 
 
-$as_echo "configure:56521: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libs_static 2>&1`" >&5
+$as_echo "configure:56540: check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libs_static 2>&1`" >&5
 check_package_wrapper_run_results=`${oac_cv_check_package_munge_wrapper_compiler} --showme:libs_static 2>&1` 1>&5 2>&1
 oac_log_command_status=$?
-$as_echo "configure:56524: \$? = $oac_log_command_status" >&5
+$as_echo "configure:56543: \$? = $oac_log_command_status" >&5
 if test $oac_log_command_status -eq 0; then :
   check_package_wrapper_internal_result=$check_package_wrapper_run_results
               for check_package_wrapper_internal_tmp in ${check_package_wrapper_internal_result} ; do
@@ -56539,7 +56558,7 @@ $as_echo "error" >&6; }
                        as_fn_error $? "An error occurred retrieving munge static libs from wrapper compiler" "$LINENO" 5
 fi
 { oac_log_command_status=; unset oac_log_command_status;}
-         $as_echo "configure:56542: wrapper output: ${check_package_wrapper_run_results}" >&5
+         $as_echo "configure:56561: wrapper output: ${check_package_wrapper_run_results}" >&5
 
 oac_var_scope_pop check_package_wrapper_run_results
 
@@ -68939,6 +68958,10 @@ else
   am__EXEEXT_FALSE=
 fi
 
+if test -z "${MAINTAINER_MODE_TRUE}" && test -z "${MAINTAINER_MODE_FALSE}"; then
+  as_fn_error $? "conditional \"MAINTAINER_MODE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   as_fn_error $? "conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -70827,9 +70850,7 @@ $as_echo X/"$am_mf" |
     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 as_fn_error $? "Something went wrong bootstrapping makefile fragments
-    for automatic dependency tracking.  If GNU make was not used, consider
-    re-running the configure script with MAKE=\"gmake\" (or whatever is
-    necessary).  You can also try re-running configure with the
+    for automatic dependency tracking.  Try re-running configure with the
     '--disable-dependency-tracking' option to at least be able to build
     the package (albeit without support for automatic dependency tracking).
 See \`config.log' for more details" "$LINENO" 5; }

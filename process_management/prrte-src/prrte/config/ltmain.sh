@@ -2124,7 +2124,7 @@ fi
 # a configuration failure hint, and exit.
 func_fatal_configuration ()
 {
-    func_fatal_error ${1+"$@"} \
+    func__fatal_error ${1+"$@"} \
       "See the $PACKAGE documentation for more information." \
       "Fatal configuration error."
 }
@@ -7862,14 +7862,8 @@ func_mode_link ()
 	func_source "$lib"
 
 	# Convert "-framework foo" to "foo.ltframework"
-        # and "-pthread" to "-Wl,-pthread" if NAG compiler
 	if test -n "$inherited_linker_flags"; then
-          case "$CC" in
-            *nagfor*)
-	      tmp_inherited_linker_flags=`$ECHO "$inherited_linker_flags" | $SED 's/-framework \([^ $]*\)/\1.ltframework/g' | $SED 's/-pthread/-Wl,-pthread/g'`;;
-            *)
-	      tmp_inherited_linker_flags=`$ECHO "$inherited_linker_flags" | $SED 's/-framework \([^ $]*\)/\1.ltframework/g'`;;
-          esac
+	  tmp_inherited_linker_flags=`$ECHO "$inherited_linker_flags" | $SED 's/-framework \([^ $]*\)/\1.ltframework/g'`
 	  for tmp_inherited_linker_flag in $tmp_inherited_linker_flags; do
 	    case " $new_inherited_linker_flags " in
 	      *" $tmp_inherited_linker_flag "*) ;;
