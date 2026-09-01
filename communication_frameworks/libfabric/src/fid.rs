@@ -5,6 +5,7 @@ use std::sync::OnceLock;
 pub(crate) type RawFid = *mut libfabric_sys::fid;
 
 #[derive(Hash, Clone, Copy)]
+#[allow(dead_code)]
 pub struct Fid(pub(crate) usize);
 
 pub(crate) struct TypedFid<FID: AsRawFid>(pub(crate) FID);

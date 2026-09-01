@@ -47,6 +47,7 @@ pub enum QueueError {
 }
 
 impl Error {
+    #[allow(dead_code)]
     pub(crate) fn from_completion_queue_err(queue_error: CompletionError) -> Self {
         Self {
             c_err: libfabric_sys::FI_EAVAIL,
@@ -54,6 +55,7 @@ impl Error {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn from_event_queue_err(queue_error: EventError) -> Self {
         Self {
             c_err: libfabric_sys::FI_EAVAIL,

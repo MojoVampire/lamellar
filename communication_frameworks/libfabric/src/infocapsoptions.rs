@@ -2401,6 +2401,7 @@ impl<
         RREAD,
     >
 {
+    #[allow(deprecated)]
     pub fn inner() -> InfoCapsImpl {
         InfoCapsImpl::new()
             .msg_if(MSG)

@@ -113,6 +113,7 @@ impl Completion {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn pop(&mut self) -> Option<SingleCompletion> {
         match self {
             Completion::Unspec(v) => v.pop().map(SingleCompletion::Unspec),

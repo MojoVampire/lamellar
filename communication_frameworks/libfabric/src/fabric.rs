@@ -13,6 +13,7 @@ use crate::{
 
 pub(crate) struct FabricImpl {
     pub(crate) c_fabric: OwnedFabricFid,
+    #[allow(dead_code)]
     pub(crate) using_context2: bool,
 }
 

@@ -775,6 +775,7 @@ unsafe impl Send for MemoryRegionDesc<'_> {}
 unsafe impl Sync for MemoryRegionDesc<'_> {}
 
 impl OwnedMemoryRegionDesc {
+    #[allow(dead_code)]
     pub(crate) fn from_raw(c_desc: *mut std::ffi::c_void) -> Self {
         Self { c_desc }
     }

@@ -863,7 +863,9 @@ unsafe impl Send for Context {}
 unsafe impl Sync for Context {}
 
 pub(crate) enum ContextState {
+    #[allow(dead_code)]
     Cq(Result<SingleCompletion, crate::error::Error>),
+    #[allow(dead_code)]
     Eq(Result<Event, crate::error::Error>),
 }
 
@@ -1022,6 +1024,7 @@ impl ContextType {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn ready(&self) -> bool {
         match self {
             ContextType::Context1(ctx) => ctx.ready.load(atomic::Ordering::Relaxed),
@@ -1029,6 +1032,7 @@ impl ContextType {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn reset(&mut self) {
         match self {
             ContextType::Context1(ctx) => {
@@ -1042,6 +1046,7 @@ impl ContextType {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn state(&mut self) -> &mut MyOnceCell<ContextState> {
         match self {
             ContextType::Context1(ctx) => &mut ctx.state,
@@ -1059,6 +1064,7 @@ impl Context {
         self.0.inner()
     }
 
+    #[allow(dead_code)]
     pub(crate) fn state(&mut self) -> &mut MyOnceCell<ContextState> {
         self.0.state()
     }
@@ -1076,10 +1082,12 @@ impl Context {
         self.0.set_event_done(comp)
     }
 
+    #[allow(dead_code)]
     pub(crate) fn reset(&mut self) {
         self.0.reset()
     }
 
+    #[allow(dead_code)]
     pub(crate) fn ready(&self) -> bool {
         self.0.ready()
     }
