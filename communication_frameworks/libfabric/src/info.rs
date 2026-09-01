@@ -694,6 +694,22 @@ impl<T> InfoEntry<T> {
         &self.ep_attr
     }
 
+    /// Forces `op_flags` onto the underlying `fi_info`'s `tx_attr` directly, bypassing the
+    /// pre-`fi_getinfo` hint matching (which providers may ignore). Must be called before
+    /// this `InfoEntry` is used to build an endpoint (`fi_endpoint` uses this same raw
+    /// `fi_info` pointer as-is, no dup) for the flag to take effect.
+    pub fn set_tx_op_flags(&self, op_flags: TransferOptions) {
+        unsafe { (*(*self.info.0).tx_attr).op_flags = op_flags.as_raw() as u64 };
+    }
+
+    /// Forces `caps` onto the underlying `fi_info`'s `rx_attr` directly, bypassing the
+    /// pre-`fi_getinfo` hint matching (which providers may ignore). Must be called before
+    /// this `InfoEntry` is used to build an endpoint (`fi_endpoint` uses this same raw
+    /// `fi_info` pointer as-is, no dup) for the flag to take effect.
+    pub fn set_rx_caps(&self, rx_caps: RxCaps) {
+        unsafe { (*(*self.info.0).rx_attr).caps = rx_caps.as_raw() };
+    }
+
     /// Returns the capabilities of the `Info`
     pub fn caps(&self) -> &InfoCapsImpl {
         &self.caps

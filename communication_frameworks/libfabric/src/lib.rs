@@ -255,23 +255,13 @@ impl MemAddressInfo {
             (std::mem::size_of::<T>() * offset) as u64
         };
 
-        let key_raw = match key.key {
-            mr::OwnedMemoryRegionKey::Key(_) => false,
-            mr::OwnedMemoryRegionKey::RawKey(_) => true,
-        };
-
-        let mut key_bytes = key.to_bytes();
-        let mut bytes = if key_raw {
-            key_bytes
-        } else {
-            key_bytes.extend(unsafe {
-                std::slice::from_raw_parts(
-                    &addr as *const u64 as *const u8,
-                    std::mem::size_of::<u64>(),
-                )
-            });
-            key_bytes
-        };
+        let mut bytes = key.to_bytes();
+        bytes.extend(unsafe {
+            std::slice::from_raw_parts(
+                &addr as *const u64 as *const u8,
+                std::mem::size_of::<u64>(),
+            )
+        });
 
         let addr_size =
             std::mem::size_of_val(slice_base) - offset * std::mem::size_of::<T>();

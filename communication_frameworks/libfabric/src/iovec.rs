@@ -204,6 +204,21 @@ impl<'a> RemoteMemAddrVec<'a> {
         self.c_rma_iovecs.push(c_rma_iov);
     }
 
+    pub fn push_raw<T: Copy>(
+        &mut self,
+        addr: RemoteMemoryAddress<T>,
+        len: usize,
+        key: &MappedMemoryRegionKey,
+    ) {
+        let c_rma_iov = libfabric_sys::fi_rma_iov {
+            addr: addr.into(),
+            len,
+            key: key.key(),
+        };
+
+        self.c_rma_iovecs.push(c_rma_iov);
+    }
+
     pub fn len(&self) -> usize {
         self.c_rma_iovecs.len()
     }
