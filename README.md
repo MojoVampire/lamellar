@@ -19,6 +19,9 @@ It also exposes the concept of remote memory regions, i.e. allocations of memory
 
 This repository is a staging area for various repositories and crates we have developed for use by Lamellar.
 
+For native build prerequisites and backend-specific system dependencies, see
+[Native dependencies](NATIVE_DEPENDENCIES.md).
+
 SUBMODULES
 ----------
 Runtime
