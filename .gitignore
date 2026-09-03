@@ -19,3 +19,6 @@ TODO
 **/node_modules
 **/output*
 lamellar_env.sh
+**/cargo-home
+lamellar-container/built
+lamellar-container/local-src
