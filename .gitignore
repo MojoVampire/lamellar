@@ -1,5 +1,10 @@
 **/target
 **/Cargo.lock
+!tutorials/April_2025/Cargo.lock
+!tutorials/July_2026/part1_rust_basics/Cargo.lock
+!tutorials/July_2026/part2_lamellar_intro/Cargo.lock
+!tutorials/Sept_2026/part1_rust_basics/Cargo.lock
+!tutorials/Sept_2026/part2_lamellar_intro/Cargo.lock
 **/*.rs.bk
 **/.vscode
 *.out
