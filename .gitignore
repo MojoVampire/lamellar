@@ -18,6 +18,7 @@ TODO
 **/bin
 **/node_modules
 **/output*
+!process_management/prrte-src/prrte/src/tools/prte_info/output.c
 lamellar_env.sh
 **/cargo-home
 lamellar-container/built
