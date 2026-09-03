@@ -1,0 +1,86 @@
+[package]
+name = "lamellar_tutorial"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+lamellar = { git = "https://github.com/pnnl/lamellar-runtime", rev = "8b1e8b3930edd3f569d1fa8d1cc4e724adfc7546", features = [
+    "runtime-warnings-panic",
+    "enable-ucx",
+] }
+rand = "0.9.0"
+
+
+# Only the native crates actually pulled in by lamellar's default features +
+# enable-ucx (with-pmix/vendored-pmi/enable-lamellar-main/vendored-pmix +
+# enable-ucx itself) — pmi1/pmi2/libfabric/rofi-c backends aren't enabled, so
+# their patches are omitted. Pinned to lamellar-runtime@8b1e8b39 (above) and
+# the lamellar monorepo's master as of this pin.
+[patch.crates-io]
+pmi = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
+pmix-sys = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
+openpmix-src = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
+prrte-sys = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
+prrte-src = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
+rofisys = { git = "https://github.com/pnnl/rofi-sys", rev = "ad5e91b8596a2551e932195f1d47a3019b1b2543" }
+lamellar-ucx-sys = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
+lamellar-ucc-sys = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
+
+[profile.dev.build-override]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+
+[profile.release-dev]
+inherits = "release"
+opt-level = 3
+lto = false
+codegen-units = 256
+
+[[bin]]
+name = "hello"
+path = "src/hello.rs"
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+[[bin]]
+name = "main_array_basics"
+path = "src/main_array_basics.rs"
+
+[[bin]]
+name = "main_am_deep_dive"
+path = "src/main_am_deep_dive.rs"
+
+[[bin]]
+name = "main_array_types"
+path = "src/main_array_types.rs"
+
+[[bin]]
+name = "main_capstone"
+path = "src/main_capstone.rs"
+
+[[bin]]
+name = "solution_main"
+path = "solutions/main.rs"
+
+[[bin]]
+name = "solution_main_array_basics"
+path = "solutions/main_array_basics.rs"
+
+[[bin]]
+name = "solution_main_am_deep_dive"
+path = "solutions/main_am_deep_dive.rs"
+
+[[bin]]
+name = "solution_main_array_types"
+path = "solutions/main_array_types.rs"
+
+[[bin]]
+name = "solution_main_capstone"
+path = "solutions/main_capstone.rs"
