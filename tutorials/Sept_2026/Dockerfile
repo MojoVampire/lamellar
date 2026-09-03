@@ -2,11 +2,11 @@
 
 FROM rust:1-bookworm
 
-LABEL description="Lamellar tutorial image: sept2026-part2"
+LABEL description="Lamellar tutorial image: sept2026"
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        build-essential clang libclang-dev cmake perl flex pkg-config ca-certificates \
+        build-essential clang libclang-dev cmake perl pkg-config ca-certificates \
         libhwloc-dev libibverbs-dev librdmacm-dev patchelf \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -14,6 +14,11 @@ RUN apt-get update \
 WORKDIR /tutorial
 COPY . .
 
+WORKDIR /tutorial/part1_rust_basics
+RUN cargo fetch --locked
+RUN cargo build --locked --release
+
+WORKDIR /tutorial/part2_lamellar_intro
 RUN cargo fetch --locked
 # Vendored UCX's autotools build defaults its submake -j to nproc; on
 # high-core-count hosts, cargo's own -j (also nproc by default) runs several
@@ -23,7 +28,7 @@ ENV MAKEFLAGS=-j4
 ENV CARGO_BUILD_JOBS=8
 # src/main_*.rs are intentionally-broken exercises fixed live during the
 # tutorial; only build the working solutions/*.rs reference bins plus hello.
-RUN cargo build --locked --release \
+RUN cargo build --locked --profile release-dev \
     --bin hello \
     --bin solution_main \
     --bin solution_main_array_basics \

@@ -15,14 +15,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - slug: july2026-part1
-            dir: tutorials/July_2026/part1_rust_basics
-          - slug: july2026-part2
-            dir: tutorials/July_2026/part2_lamellar_intro
-          - slug: sept2026-part1
-            dir: tutorials/Sept_2026/part1_rust_basics
-          - slug: sept2026-part2
-            dir: tutorials/Sept_2026/part2_lamellar_intro
+          - slug: july2026
+            dir: tutorials/July_2026
+          - slug: sept2026
+            dir: tutorials/Sept_2026
     steps:
       - uses: actions/checkout@v4
 
