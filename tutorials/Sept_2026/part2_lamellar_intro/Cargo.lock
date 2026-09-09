@@ -899,7 +899,7 @@ dependencies = [
 [[package]]
 name = "lamellar-ucc-sys"
 version = "0.1.1"
-source = "git+https://github.com/pnnl/lamellar?rev=3732c7a5a9094db6b6be3103acafe1b6c5e0177b#3732c7a5a9094db6b6be3103acafe1b6c5e0177b"
+source = "git+https://github.com/pnnl/lamellar?rev=c3491e6e20d6166be431af2045d90cbd7ce0c0e5#c3491e6e20d6166be431af2045d90cbd7ce0c0e5"
 dependencies = [
  "autotools",
  "bindgen",
@@ -910,7 +910,7 @@ dependencies = [
 [[package]]
 name = "lamellar-ucx-sys"
 version = "0.1.1"
-source = "git+https://github.com/pnnl/lamellar?rev=3732c7a5a9094db6b6be3103acafe1b6c5e0177b#3732c7a5a9094db6b6be3103acafe1b6c5e0177b"
+source = "git+https://github.com/pnnl/lamellar?rev=c3491e6e20d6166be431af2045d90cbd7ce0c0e5#c3491e6e20d6166be431af2045d90cbd7ce0c0e5"
 dependencies = [
  "autotools",
  "bindgen",
@@ -1095,7 +1095,7 @@ checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
 [[package]]
 name = "openpmix-src"
 version = "0.1.2"
-source = "git+https://github.com/pnnl/lamellar?rev=3732c7a5a9094db6b6be3103acafe1b6c5e0177b#3732c7a5a9094db6b6be3103acafe1b6c5e0177b"
+source = "git+https://github.com/pnnl/lamellar?rev=c3491e6e20d6166be431af2045d90cbd7ce0c0e5#c3491e6e20d6166be431af2045d90cbd7ce0c0e5"
 dependencies = [
  "autotools",
  "libevent-sys",
@@ -1220,7 +1220,7 @@ checksum = "f6b464fbc74e149a392436b17d523f769e057cb6877f6a5c4618bc6f11800548"
 [[package]]
 name = "pmi"
 version = "0.1.1"
-source = "git+https://github.com/pnnl/lamellar?rev=3732c7a5a9094db6b6be3103acafe1b6c5e0177b#3732c7a5a9094db6b6be3103acafe1b6c5e0177b"
+source = "git+https://github.com/pnnl/lamellar?rev=c3491e6e20d6166be431af2045d90cbd7ce0c0e5#c3491e6e20d6166be431af2045d90cbd7ce0c0e5"
 dependencies = [
  "libc",
  "pmi-sys",
@@ -1260,7 +1260,7 @@ dependencies = [
 [[package]]
 name = "pmix-sys"
 version = "0.1.1"
-source = "git+https://github.com/pnnl/lamellar?rev=3732c7a5a9094db6b6be3103acafe1b6c5e0177b#3732c7a5a9094db6b6be3103acafe1b6c5e0177b"
+source = "git+https://github.com/pnnl/lamellar?rev=c3491e6e20d6166be431af2045d90cbd7ce0c0e5#c3491e6e20d6166be431af2045d90cbd7ce0c0e5"
 dependencies = [
  "bindgen",
  "libevent-sys",
@@ -1349,7 +1349,7 @@ dependencies = [
 [[package]]
 name = "prrte-src"
 version = "0.1.2"
-source = "git+https://github.com/pnnl/lamellar?rev=3732c7a5a9094db6b6be3103acafe1b6c5e0177b#3732c7a5a9094db6b6be3103acafe1b6c5e0177b"
+source = "git+https://github.com/pnnl/lamellar?rev=c3491e6e20d6166be431af2045d90cbd7ce0c0e5#c3491e6e20d6166be431af2045d90cbd7ce0c0e5"
 dependencies = [
  "autotools",
 ]
@@ -1357,7 +1357,7 @@ dependencies = [
 [[package]]
 name = "prrte-sys"
 version = "0.1.1"
-source = "git+https://github.com/pnnl/lamellar?rev=3732c7a5a9094db6b6be3103acafe1b6c5e0177b#3732c7a5a9094db6b6be3103acafe1b6c5e0177b"
+source = "git+https://github.com/pnnl/lamellar?rev=c3491e6e20d6166be431af2045d90cbd7ce0c0e5#c3491e6e20d6166be431af2045d90cbd7ce0c0e5"
 dependencies = [
  "bindgen",
  "libevent-sys",

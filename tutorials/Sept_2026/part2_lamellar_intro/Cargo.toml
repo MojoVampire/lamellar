@@ -18,14 +18,14 @@ rand = "0.9.0"
 # their patches are omitted. Pinned to lamellar-runtime@8b1e8b39 (above) and
 # the lamellar monorepo's master as of this pin.
 [patch.crates-io]
-pmi = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
-pmix-sys = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
-openpmix-src = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
-prrte-sys = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
-prrte-src = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
+pmi = { git = "https://github.com/pnnl/lamellar", rev = "c3491e6e20d6166be431af2045d90cbd7ce0c0e5" }
+pmix-sys = { git = "https://github.com/pnnl/lamellar", rev = "c3491e6e20d6166be431af2045d90cbd7ce0c0e5" }
+openpmix-src = { git = "https://github.com/pnnl/lamellar", rev = "c3491e6e20d6166be431af2045d90cbd7ce0c0e5" }
+prrte-sys = { git = "https://github.com/pnnl/lamellar", rev = "c3491e6e20d6166be431af2045d90cbd7ce0c0e5" }
+prrte-src = { git = "https://github.com/pnnl/lamellar", rev = "c3491e6e20d6166be431af2045d90cbd7ce0c0e5" }
 rofisys = { git = "https://github.com/pnnl/rofi-sys", rev = "ad5e91b8596a2551e932195f1d47a3019b1b2543" }
-lamellar-ucx-sys = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
-lamellar-ucc-sys = { git = "https://github.com/pnnl/lamellar", rev = "3732c7a5a9094db6b6be3103acafe1b6c5e0177b" }
+lamellar-ucx-sys = { git = "https://github.com/pnnl/lamellar", rev = "c3491e6e20d6166be431af2045d90cbd7ce0c0e5" }
+lamellar-ucc-sys = { git = "https://github.com/pnnl/lamellar", rev = "c3491e6e20d6166be431af2045d90cbd7ce0c0e5" }
 
 [profile.dev.build-override]
 opt-level = 3
