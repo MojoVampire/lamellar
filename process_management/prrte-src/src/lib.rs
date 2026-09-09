@@ -111,6 +111,47 @@ fn copy_rec(src: &Path, dst: &Path) -> std::io::Result<()> {
     Ok(())
 }
 
+/// The vendored tree is a PRRTE `make dist` release tarball whose pre-generated
+/// Flex outputs (`*_lex.c` / `*_lex.h`) are shipped *newer* than their `*.l`
+/// sources, so `make` never needs Flex to (re)generate them -- that is the
+/// whole point of vendoring the release tarball instead of a git checkout.
+/// But git checkout doesn't record mtimes and `copy_rec` (std::fs::copy)
+/// doesn't preserve them, so after the copy a `.l` source can end up newer than
+/// its generated `.c`. `make` then tries to rerun Flex -- failing outright when
+/// Flex is absent, or forcing a Flex build dependency we vendored specifically
+/// to avoid. Re-assert generated-newer-than-source under the freshly-copied
+/// tree: push each `.l` into the past and its generated `.c`/`.h` to now.
+fn retime_generated_lexers(root: &Path) {
+    fn set_mtime(path: &Path, t: std::time::SystemTime) {
+        if let Ok(f) = std::fs::OpenOptions::new().write(true).open(path) {
+            let _ = f.set_modified(t);
+        }
+    }
+    fn walk(dir: &Path, now: std::time::SystemTime, older: std::time::SystemTime) {
+        let entries = match std::fs::read_dir(dir) {
+            Ok(e) => e,
+            Err(_) => return,
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                walk(&path, now, older);
+            } else if path.extension().map_or(false, |e| e == "l") {
+                set_mtime(&path, older);
+                for ext in ["c", "h"] {
+                    let generated = path.with_extension(ext);
+                    if generated.is_file() {
+                        set_mtime(&generated, now);
+                    }
+                }
+            }
+        }
+    }
+    let now = std::time::SystemTime::now();
+    let older = now - std::time::Duration::from_secs(60);
+    walk(root, now, older);
+}
+
 impl Build {
     pub fn new() -> Build {
         Build {
@@ -165,6 +206,7 @@ impl Build {
         let src = source_dir();
 
         copy_rec(&src, &dest).expect("Failed to copy source_dir() to OUT_DIR/src");
+        retime_generated_lexers(&dest);
 
         let prrte_path = std::fs::canonicalize(dest).unwrap();
 

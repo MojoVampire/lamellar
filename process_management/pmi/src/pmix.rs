@@ -82,7 +82,7 @@ impl PmiX {
         check_error!(unsafe {
             pmix_sys::PMIx_Get(
                 &wildcard,
-                key.as_ptr() as *mut i8,
+                key.as_ptr() as *const std::os::raw::c_char,
                 std::ptr::null(),
                 0,
                 &mut val,
@@ -96,7 +96,7 @@ impl PmiX {
         check_error!(unsafe {
             pmix_sys::PMIx_Get(
                 &myproc,
-                pmix_sys::PMIX_NODEID.as_ptr() as *mut i8,
+                pmix_sys::PMIX_NODEID.as_ptr() as *const std::os::raw::c_char,
                 std::ptr::null(),
                 0,
                 &mut node_val,
@@ -115,7 +115,7 @@ impl PmiX {
                 let rc = unsafe {
                     pmix_sys::PMIx_Get(
                         &proc_r,
-                        pmix_sys::PMIX_NODEID.as_ptr() as *mut i8,
+                        pmix_sys::PMIX_NODEID.as_ptr() as *const std::os::raw::c_char,
                         std::ptr::null(),
                         0,
                         &mut nid_val,
@@ -164,7 +164,7 @@ impl PmiX {
             let rc = unsafe {
                 pmix_sys::PMIx_Get(
                     &proc_j,
-                    key_job.as_ptr() as *mut i8,
+                    key_job.as_ptr() as *const std::os::raw::c_char,
                     std::ptr::null(),
                     0,
                     &mut job_val,
