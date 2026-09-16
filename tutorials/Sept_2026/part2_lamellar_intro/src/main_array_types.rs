@@ -38,10 +38,10 @@ fn main() {
     // returned handle instead of binding it doesn't leave the old handle usable - it's a
     // hard compile error (E0382, "borrow of moved value") on the `atomic_array` use below.
     // Fix by binding (and blocking) the result: `let read_only_array = atomic_array.into_read_only().block();`
-    atomic_array.into_read_only();
+    let read_only_array = atomic_array.into_read_only().block();
 
     if my_pe == 0 {
-        atomic_array
+        read_only_array
             .onesided_iter()
             .into_iter()
             .for_each(|elem| print!("{elem} "));

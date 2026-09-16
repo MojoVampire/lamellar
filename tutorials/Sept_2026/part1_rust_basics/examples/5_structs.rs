@@ -6,6 +6,7 @@
 /// Clone represents a duplication of data strucutre that may or may not be expensive (e.g. reference counted pointers)
 /// Not all data structures that implement Clone implement Copy, but all data structures that implement Copy can implment Clone.
 /// For this data stucture both implementations are the exact same (bitwise copies).
+#[derive(Clone, Copy, Debug)]
 struct Complex {
     re: f64,
     im: f64,

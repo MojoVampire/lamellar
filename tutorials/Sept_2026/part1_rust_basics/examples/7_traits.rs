@@ -35,6 +35,16 @@ impl Mul for Complex {
     }
 }
 
+impl Mul<f64> for Complex {
+    type Output = Self;
+    fn mul(self, other: f64) -> Self::Output {
+        Complex {
+            re: self.re * other,
+            im: self.im * other,
+        }
+    }
+}
+
 // We can also define our own traits
 trait MyPrint {
     fn print(&self) -> String;
@@ -43,6 +53,12 @@ trait MyPrint {
 impl MyPrint for Complex {
     fn print(&self) -> String {
         format!("{} + {}i", self.re.print(), self.im.print())
+    }
+}
+
+impl MyPrint for f64 {
+    fn print(&self) -> String {
+        self.to_string()
     }
 }
 

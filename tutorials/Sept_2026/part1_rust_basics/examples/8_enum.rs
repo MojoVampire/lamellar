@@ -42,14 +42,18 @@ impl Cmd {
     fn execute(&self, c: Complex) -> Complex {
         // Pattern matching on enums is a powerful feature of Rust.
         // The compiler enforces that all possible values are matched.
-        match self {
+        match *self {
             Cmd::Print => {
                 println!("Printing complex number: {}", c.print());
                 c
             }
             Cmd::Create(re, im) => {
                 println!("Creating new complex number: {} + {}i", re.print(), im.print());
-                // error: missing arm construction below
+                Complex{ re, im }
+            }
+            Cmd::Add(other) => {
+                println!("Adding complex number {} to {}", other.print(), c.print());
+                c + other
             }
         }
     }

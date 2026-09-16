@@ -28,9 +28,9 @@ fn main() {
     let mut handles = vec![];
 
     for _ in 0..4 {
+        // Per loop clone of shared to move into thread
+        let shared = Arc::clone(&shared);
         handles.push(thread::spawn(move || {
-            // error: `shared` moved into the first spawned closure,
-            // then used again on the next loop iteration
             for _ in 0..1000 {
                 shared.fetch_add(1, Ordering::Relaxed);
             }
@@ -38,8 +38,8 @@ fn main() {
     }
 
     for h in handles {
-        let _ = h.join();
+        h.join().expect("Should be impossible to fail to join child threads");
     }
 
-    println!("final count: {}", shared.load(Ordering::Relaxed));
+    println!("final count: {}", Arc::into_inner(shared).expect("Should be final strong reference").into_inner());
 }

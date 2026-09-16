@@ -48,10 +48,16 @@ fn sum_if_all_negative(nums: &[Complex]) -> Result<Complex, &'static str> {
 }
 
 fn process_nums_unwrap(nums: &[Complex]) {
-    let max = max_real(nums).unwrap(); // panics if max_real returns None
-    println!("Max real: {max:?}");
-    let sum = sum_if_all_negative(nums).unwrap(); // panics if sum_if_all_negative returns Err
-    println!("Sum: {sum:?}");
+    if let Some(max) = max_real(nums) {
+        println!("Max real: {max:?}");
+    } else {
+        println!("nums is empty, has no maximum");
+    }
+    if let Ok(sum) = sum_if_all_negative(nums) {
+        println!("Sum: {sum:?}");
+    } else {
+        println!("nums contained positive values");
+    }
 }
 
 fn main() {
@@ -59,8 +65,16 @@ fn main() {
         Complex { re: 1.0, im: 2.0 },
         Complex { re: 3.0, im: 4.0 },
     ];
+    let nums_1 = vec![
+        Complex { re: -5.0, im: -6.0 },
+        Complex { re: -7.0, im: -8.0},
+    ];
     let nums_2: Vec<Complex> = vec![];
 
+    println!("For >0 positive values:");
     process_nums_unwrap(&nums_0);
-    process_nums_unwrap(&nums_2); // this panics: empty slice -> None -> unwrap panic
+    println!("\nFor >0 purely negative values:");
+    process_nums_unwrap(&nums_1);
+    println!("\nFor empty:");
+    process_nums_unwrap(&nums_2);
 }

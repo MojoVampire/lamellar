@@ -45,12 +45,12 @@ fn lamellar_unsafe_histogram(world: &LamellarWorld, indices: &[usize]) {
     .block();
     world.barrier();
     let timer = std::time::Instant::now();
-    table.batch_add(indices, 1).block();
+    unsafe { table.batch_add(indices, 1).block(); }
     table.barrier();
     println!("Lamellar Unsafe Time: {:?}", timer.elapsed());
 
     if world.my_pe() == 0 {
-        println!("Sum: {:?}", table.sum().block());
+        println!("Sum: {:?}", unsafe { table.sum().block() });
     }
 }
 
@@ -139,7 +139,7 @@ fn lamellar_am_histogram(world: &LamellarWorld, indices: Vec<usize>) {
     let table = Darc::new(world, table).block().expect("failed to create Darc");
     let indices = Arc::new(indices);
 
-    let num_threads = std::cmp::max(world.num_threads_per_pe() / 4, 1);
+    let num_threads = 1.max(world.num_threads_per_pe() / 4);
     let chunk_size = indices.len() / num_threads;
     world.barrier();
     let timer = std::time::Instant::now();
@@ -154,12 +154,29 @@ fn lamellar_am_histogram(world: &LamellarWorld, indices: Vec<usize>) {
             })
             .spawn();
     }
-
+    world.barrier();
+    world.wait_all();
     println!("Lamellar AM Time: {:?}", timer.elapsed());
-    println!(
-        "Sum: {:?}",
-        table.iter().map(|e| e.load(Ordering::SeqCst)).sum::<usize>()
-    );
+
+    let pe_sums: AtomicArray<usize> = AtomicArray::new(
+        world,
+        world.num_pes(),
+        Distribution::Cyclic,
+    )
+    .block();
+
+    let pe_sum = table.iter().map(|e| e.load(Ordering::SeqCst)).sum::<usize>();
+    println!("Sum: {pe_sum:?}");
+
+    pe_sums.put_unmanaged(world.my_pe(), pe_sum);
+
+    world.barrier();
+
+    let pe_sums = pe_sums.into_read_only().block();
+
+    if world.my_pe() == 0 {
+        println!("Total sum: {:?}", pe_sums.sum().block());
+    }
 }
 
 #[lamellar::main]

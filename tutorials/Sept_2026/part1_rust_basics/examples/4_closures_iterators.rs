@@ -8,8 +8,8 @@ fn main() {
     let sum_doubled: i32 = data.iter().map(|x| x * 2).sum();
     println!("sum_doubled: {sum_doubled}");
 
-    let print_all = move || {
-        // `move` forces this closure to take ownership of `data`
+    let print_all = || {
+        // Removed `move` to avoid taking ownership
         for x in &data {
             println!("{x}");
         }

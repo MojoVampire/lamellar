@@ -36,17 +36,20 @@ fn main() {
     //
     // BUG: forgot to wait for the request before it drops -
     // uncomment the next line to fix it.
-    world.exec_am_all(HelloWorld {
+    let _ = world.exec_am_all(HelloWorld {
         original_pe: my_pe,
-    });
+    }).spawn();
     // .block();
+    
+    world.barrier();
 
     // spawn_am_all() is EAGER: it submits to the scheduler immediately, so the
     // AM runs on every PE regardless of what you do with the returned handle.
     // Dropping it (as below) just means you never get its result/completion
     // signal directly - but world's Drop impl calls wait_all() for you, so the
     // print below is still guaranteed to land before the process exits.
-    world.spawn_am_all(HelloWorld {
+    let _ = world.spawn_am_all(HelloWorld {
         original_pe: my_pe,
     });
+
 } // world drop does barrier() + wait_all() + barrier() - it DOES wait for outstanding AMs

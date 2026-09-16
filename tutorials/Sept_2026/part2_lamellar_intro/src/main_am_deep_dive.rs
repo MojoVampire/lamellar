@@ -68,6 +68,10 @@ fn main() {
         });
     }
 
+    world.barrier();
+
+    world.wait_all();
+
     // BUG: nothing waits for the fanned-out LocalSumAm's to finish before reading
     // `total` - a race, so the print below may show a partial (or even 0) sum
     // depending on how fast the AMs land relative to this line.

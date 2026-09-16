@@ -25,11 +25,13 @@ fn main() {
     // BUG: onesided_iter() collects the whole array to PE 0 (data movement!) - fine for
     // small arrays/debugging, but this runs on every PE here, which is wasteful and prints
     // the same full array num_pes times. Guard with `if world.my_pe() == 0` instead.
-    array
-        .onesided_iter()
-        .into_iter()
-        .for_each(|elem| print!("{elem} "));
-    println!();
+    if world.my_pe() == 0 {
+        array
+            .onesided_iter()
+            .into_iter()
+            .for_each(|elem| print!("{elem} "));
+        println!();
+    }
     world.barrier();
 
     array.print(); // show each PE's local slice of the array
