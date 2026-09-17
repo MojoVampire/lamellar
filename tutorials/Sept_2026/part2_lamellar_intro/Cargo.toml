@@ -46,6 +46,10 @@ name = "hello"
 path = "src/hello.rs"
 
 [[bin]]
+name = "hello_am"
+path = "src/hello_am.rs"
+
+[[bin]]
 name = "main"
 path = "src/main.rs"
 
