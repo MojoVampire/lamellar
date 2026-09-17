@@ -17,14 +17,14 @@ use lamellar::darc::prelude::*;
 
 fn generate_random_indices(n: usize, max_val: usize) -> Vec<usize> {
     let mut rng = rand::rng();
-    (0..n).map(|_| Rng::random_range(&mut rng, 0..max_val)).collect()
+    (0..n).map(|_| rng.random_range(0..max_val)).collect()
 }
 
 fn serial_histogram(indices: &[usize]) {
     let mut table = vec![0; indices.len()];
     let timer = std::time::Instant::now();
-    for i in indices {
-        table[*i] += 1;
+    for &i in indices {
+        table[i] += 1;
     }
     println!("Serial Time: {:?}", timer.elapsed());
     println!("Sum: {:?}", table.iter().sum::<usize>());
@@ -45,12 +45,12 @@ fn lamellar_unsafe_histogram(world: &LamellarWorld, indices: &[usize]) {
     .block();
     world.barrier();
     let timer = std::time::Instant::now();
-    unsafe { table.batch_add(indices, 1).block(); }
+    unsafe { table.batch_add(indices, 1) }.block();
     table.barrier();
     println!("Lamellar Unsafe Time: {:?}", timer.elapsed());
 
     if world.my_pe() == 0 {
-        println!("Sum: {:?}", unsafe { table.sum().block() });
+        println!("Sum: {:?}", unsafe { table.sum() }.block());
     }
 }
 
@@ -86,12 +86,12 @@ struct HistoLaunch {
 #[local_am]
 impl LamellarAM for HistoLaunch {
     async fn exec(self) {
-        let mut pe_indices = vec![vec![]; lamellar::num_pes];
-        for i in
+        let mut pe_indices = vec![Vec::with_capacity(self.chunk_size); lamellar::num_pes];
+        for &i in
             &self.indices[self.thread_id * self.chunk_size..(self.thread_id + 1) * self.chunk_size]
         {
-            let pe = *i % lamellar::num_pes;
-            let offset = *i / lamellar::num_pes;
+            let pe = i % lamellar::num_pes;
+            let offset = i / lamellar::num_pes;
             pe_indices[pe].push(offset);
         }
         for (pe, indices) in pe_indices.into_iter().enumerate() {
@@ -100,7 +100,7 @@ impl LamellarAM for HistoLaunch {
                     pe,
                     HistoAm {
                         indices,
-                        table: self.table.clone(),
+                        table: Darc::clone(&self.table),
                     },
                 )
                 .spawn();
